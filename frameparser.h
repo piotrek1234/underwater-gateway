@@ -6,6 +6,7 @@
 #include <QMap>
 #include "frame.h"
 #include "handler.h"
+#include <iostream>
 
 class FrameParser : public QObject
 {
@@ -24,6 +25,7 @@ public slots:
     void parseFrame(QString frame);
     void buildFrame(QStringList args);  //dla faktycznych odpowiedzi
     void buildErrorFrame(QString content);   //dla błędów
+    void printFrame(QString frame); //dla debuga
 };
 
 #endif // FRAMEPARSER_H

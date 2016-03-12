@@ -42,13 +42,29 @@ void TcpServer::grabFrame()
     if(socket)
     {
         QString frame(socket->readAll());
-        if(frame.at(0) == Frame::FRAME_START)   //przemyśleć czy nie lepiej szukać pozycji nawiasu (
+
+        bool nadal = true;
+        int pos1=0, pos2=0;
+        while(nadal)
+        {
+            pos1 = frame.indexOf(Frame::FRAME_START, pos1);
+            pos2 = frame.indexOf(Frame::FRAME_END, pos2);
+            int len = pos2-pos1-1;
+            if(len > 0)
+                emit frameContent(frame.mid(pos1+1, len));
+            if(pos1 == -1 || pos2 == -1)
+                nadal = false;
+            pos1++;
+            pos2++;
+        }
+
+        /*if(frame.at(0) == Frame::FRAME_START)   //przemyśleć czy nie lepiej szukać pozycji nawiasu (
         {
             int len = frame.indexOf(Frame::FRAME_END)-1;
             if(len > 0)
                 emit frameContent(frame.mid(1, len));
             //std::cout << frame.mid(1, len).toStdString() << std::endl;
-        }
+        }*/
     }
 }
 

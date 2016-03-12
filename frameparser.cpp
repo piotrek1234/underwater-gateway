@@ -91,3 +91,8 @@ void FrameParser::buildErrorFrame(QString content)
     emit sendFrame(frame);
 }
 
+void FrameParser::printFrame(QString frame)
+{
+    std::cout << frame.toStdString() << std::endl;
+}
+

@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     FrameParser fp;
 
     QObject::connect(&s, SIGNAL(frameContent(QString)), &fp, SLOT(parseFrame(QString)));
+    //QObject::connect(&s, SIGNAL(frameContent(QString)), &fp, SLOT(printFrame(QString)));
     QObject::connect(&fp, SIGNAL(sendFrame(QString)), &s, SLOT(sendResponse(QString)));
     AxisHandler* ah = new AxisHandler();
     ah->setAxesCount(1);
