@@ -1,0 +1,62 @@
+#include "motorhandler.h"
+
+MotorHandler::MotorHandler(unsigned int motorsCount)
+{
+    motorsCount_ = 0;
+    setMotorsCount(motorsCount);
+}
+
+MotorHandler::~MotorHandler()
+{
+
+}
+
+void MotorHandler::set(QStringList frame)
+{
+    if(frame.length() == 2)
+    {
+
+    }
+    else
+        emit error("Arguments count not valid. Required 2, given "+QString::number(frame.length()));
+}
+
+void MotorHandler::get(QStringList frame)
+{
+    if(frame.length() == 1)
+    {
+
+    }
+    else
+        emit error("Arguments count not valid. Required 1, given "+QString::number(frame.length()));
+}
+
+void MotorHandler::setMotorsCount(unsigned int count)
+{
+    if(count < motorsCount_)
+    {
+        assignedRegisters.erase(assignedRegisters.begin()+count, assignedRegisters.end());
+    }
+    else if(count > motorsCount_)
+    {
+        for(unsigned int i=0; i<count-motorsCount_; ++i)
+            assignedRegisters.append(0);
+    }
+    motorsCount_ = count;
+}
+
+void MotorHandler::assignRegister(unsigned int motorNr, int regAddr)
+{
+    if((motorNr <= motorsCount_) && (motorNr <= assignedRegisters.size()))
+        assignedRegisters[motorNr] = regAddr;
+    else
+        emit error("Motor index out of range");
+}
+
+int MotorHandler::getRegister(unsigned int motor)
+{
+    if((motor <= motorsCount_) && (motor <= assignedRegisters.size()))
+        return assignedRegisters.at(motor);
+    emit error("Motor index out of range");
+}
+
