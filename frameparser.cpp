@@ -28,6 +28,14 @@ Handler *FrameParser::getHandler(char type)
 void FrameParser::parseFrame(QString frame)
 {
     QStringList args = frame.split(",", QString::KeepEmptyParts);
+
+    // echo request
+    if(args.at(0) == QString(Frame::FRAME_TYPE_ECHO))
+    {
+        buildFrame(QStringList() << "alive");
+        return;
+    }
+
     if(args.length() < 2)
     {
         buildErrorFrame("Incomplete frame (only one element)");

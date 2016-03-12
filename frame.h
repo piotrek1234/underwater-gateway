@@ -14,6 +14,7 @@ public:
     static const char FRAME_TYPE_SET = 'S';
     static const char FRAME_TYPE_RESPONSE = 'R';
     static const char FRAME_TYPE_ERROR = 'E';
+    static const char FRAME_TYPE_ECHO = '?';
 };
 
 #endif // FRAME_H
