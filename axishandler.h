@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include "handler.h"
+#include "modbusmaster.h"
 
 class AxisHandler : public Handler
 {
@@ -12,6 +13,7 @@ public:
     virtual ~AxisHandler();
     virtual void set(QStringList frame);
     virtual void get(QStringList frame);
+    void setModbus(ModbusMaster* modbus);
     void setAxesCount(unsigned int count);
     unsigned int getAxesCount() { return axesCount_; }
     void assignRegister(unsigned int axisNr, int regAddr);
@@ -20,6 +22,7 @@ public:
 private:
     QVector<int> assignedRegisters;
     unsigned int axesCount_;
+    ModbusMaster* modbus_;
 };
 
 #endif // AXISHANDLER_H

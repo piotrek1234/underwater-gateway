@@ -18,7 +18,6 @@ protected:
 signals:
     void response(QStringList);
     void error(QString);
-    void command(int reg, int value);
 };
 
 #endif // HANDLER_H

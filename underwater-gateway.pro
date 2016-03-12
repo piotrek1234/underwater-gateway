@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 QT       += core network
-
 QT       -= gui
 
 TARGET = underwater-gateway
@@ -14,15 +13,17 @@ CONFIG   -= app_bundle
 CONFIG += c++11
 QMAKE_CXXFLAGS += -std=c++0x
 
-#INCLUDEPATH += /usr/include/opencv2
+# opencv
 LIBS += -L/usr/local/lib
 LIBS += -lopencv_core
 LIBS += -lopencv_imgproc
 LIBS += -lopencv_highgui
 LIBS += -lopencv_features2d
 
-TEMPLATE = app
+# modbus
+LIBS += -lmodbus
 
+TEMPLATE = app
 
 SOURCES += main.cpp \
     tcpserver.cpp \
