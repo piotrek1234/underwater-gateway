@@ -4,8 +4,8 @@
 class Frame
 {
 public:
-    Frame();
-    virtual ~Frame();
+    Frame() {}
+    virtual ~Frame() {}
 public:
     static const char FRAME_START = '(';
     static const char FRAME_SEPARATOR = ',';

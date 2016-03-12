@@ -2,12 +2,10 @@
 
 FrameParser::FrameParser(QObject *parent) : QObject(parent)
 {
-
 }
 
 FrameParser::~FrameParser()
 {
-
 }
 
 void FrameParser::addHandler(Handler *handler)
@@ -38,7 +36,7 @@ void FrameParser::parseFrame(QString frame)
 
     if(args.length() < 2)
     {
-        buildErrorFrame("Incomplete frame (only one element)");
+        buildErrorFrame("Incomplete frame (only one element given)");
         return;
     }
 

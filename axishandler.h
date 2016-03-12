@@ -10,7 +10,7 @@ class AxisHandler : public Handler, public ModbusInterface
 public:
     AxisHandler() : axesCount_(0) {}
     AxisHandler(unsigned int axesCount);
-    virtual ~AxisHandler();
+    virtual ~AxisHandler() {}
     virtual void set(QStringList frame);
     virtual void get(QStringList frame);
     void setAxesCount(unsigned int count);
@@ -19,7 +19,7 @@ public:
     int getRegister(unsigned int axisNr);
     virtual char handlerType() const { return 'A'; }
 private:
-    QVector<int> assignedRegisters;
+    QVector<int> assignedRegisters_;
     unsigned int axesCount_;
 };
 

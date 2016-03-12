@@ -21,7 +21,7 @@ struct CameraInfo{
 class CameraHandler : public Handler
 {
 public:
-    CameraHandler() : camerasCount_(0), host("127.0.0.1") {}
+    CameraHandler() : camerasCount_(0), host_("127.0.0.1") {}
     CameraHandler(unsigned int camerasCount);
     virtual ~CameraHandler();
     virtual void get(QStringList frame);
@@ -33,9 +33,9 @@ public:
     void setHostAddress(QString address);
     virtual char handlerType() const { return 'C'; }
 private:
-    QVector<QPair<CameraWorker*, QThread*> > cams;
+    QVector<QPair<CameraWorker*, QThread*> > cams_;
     unsigned int camerasCount_;
-    QString host;
+    QString host_;
 };
 
 #endif // CAMERAHANDLER_H

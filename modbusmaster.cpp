@@ -1,12 +1,13 @@
 #include "modbusmaster.h"
 
-ModbusMaster::ModbusMaster(QString device, int baud=9600) : device_(device), baud_(baud)
+ModbusMaster::ModbusMaster(QString device, int slave, int baud=115200) : device_(device), baud_(baud), slave_(slave)
 {
     modbus = modbus_new_rtu(device.toStdString().c_str(), baud, 'N', 8, 1);
     if(modbus == NULL)
         return; //lipa, nie udało się
 
     modbus_set_slave(modbus, slave);
+
     if (modbus_connect(modbus) == -1)
     {
         //fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
@@ -23,7 +24,8 @@ ModbusMaster::~ModbusMaster()
 
 void ModbusMaster::write(int reg, int value)
 {
-    modbus_write_register(modbus, reg, value);
+    if(modbus_write_register(modbus, reg, value) == 1)
+        return;
     //zwracać bool z info czy się udało
 }
 

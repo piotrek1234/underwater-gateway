@@ -27,7 +27,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     tcpserver.cpp \
-    frame.cpp \
     frameparser.cpp \
     handler.cpp \
     motorhandler.cpp \

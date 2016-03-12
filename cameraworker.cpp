@@ -7,25 +7,30 @@ CameraWorker::CameraWorker(QObject *parent) :
 
 void CameraWorker::stream()
 {
+    // na podstawie https://github.com/chenxiaoqino/udp-image-streaming/blob/master/Client.cpp
+
     using namespace cv;
-    string servAddress = host_->toStdString(); // First arg: server address
+
+    string servAddress = host_->toStdString();
     unsigned short servPort = Socket::resolveService(QString::number(port).toStdString(), "udp");
 
-    try {
+    try
+    {
         UDPSocket sock;
-        int jpegqual =  ENCODE_QUALITY; // Compression Parameter
+        int jpegqual =  ENCODE_QUALITY;
 
         Mat frame, send;
         vector < uchar > encoded;
-        VideoCapture cap(device); // Grab the camera
-        //namedWindow("send", CV_WINDOW_AUTOSIZE);
-        if (!cap.isOpened()) {
-            cerr << "OpenCV Failed to open camera";
-            exit(1);
+        VideoCapture cap(device);
+
+        if (!cap.isOpened())
+        {
+            cerr << "OpenCV Failed to open camera\n";
+            turnedOn = false;
         }
 
-        //clock_t last_cycle = clock();
-        while (turnedOn) {
+        while (turnedOn)
+        {
             cap >> frame;
             resize(frame, send, Size(res_w, res_h), 0, 0, INTER_LINEAR);
             vector < int > compression_params;
@@ -43,31 +48,20 @@ void CameraWorker::stream()
             for (int i = 0; i < total_pack; i++)
                 sock.sendTo( & encoded[i * PACK_SIZE], PACK_SIZE, servAddress, servPort);
 
-            waitKey(FRAME_INTERVAL);
-
-            //clock_t next_cycle = clock();
-            //double duration = (next_cycle - last_cycle) / (double) CLOCKS_PER_SEC;
-            //cout << "\teffective FPS:" << (1 / duration) << " \tkbps:" << (PACK_SIZE * total_pack / duration / 1024 * 8) << endl;
-
-            //cout << next_cycle - last_cycle;
-            //last_cycle = next_cycle;
+            waitKey(1000/fps);
         }
-        // Destructor closes the socket
-
-    } catch (SocketException & e) {
+        emit streamEnded();
+    }
+    catch (SocketException & e)
+    {
         cerr << e.what() << endl;
-        exit(1);
+        turnedOn = false;
     }
 }
 
 void CameraWorker::stop()
 {
     turnedOn = false;
-}
-
-void CameraWorker::restart()
-{
-
 }
 
 void CameraWorker::setHost(QString *host)

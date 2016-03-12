@@ -9,13 +9,13 @@ class ModbusMaster : public QObject
 {
     Q_OBJECT
 public:
-    ModbusMaster(QString device, int baud);
+    ModbusMaster(QString device, int slave, int baud);
     ~ModbusMaster();
     void write(int reg, int value);
     int read(int reg);
 private:
     QString device_;
-    int slave;
+    int slave_;
     int baud_;
     modbus_t* modbus;
 };
