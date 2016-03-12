@@ -4,8 +4,9 @@
 #include <QVector>
 #include <QString>
 #include "handler.h"
+#include "modbusinterface.h"
 
-class MotorHandler : public Handler
+class MotorHandler : public Handler, public ModbusInterface
 {
 public:
     MotorHandler() : motorsCount_(0) {}

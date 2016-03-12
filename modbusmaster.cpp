@@ -24,14 +24,15 @@ ModbusMaster::~ModbusMaster()
 void ModbusMaster::write(int reg, int value)
 {
     modbus_write_register(modbus, reg, value);
+    //zwracać bool z info czy się udało
 }
 
 int ModbusMaster::read(int reg)
 {
     //todo: sprawdzić co się dzieje przy ujemnych liczbach
-    u_int16_t* val;
-    if(modbus_read_registers(modbus, reg, 1, val) == 1)
-        return *val;
+    u_int16_t val;
+    if(modbus_read_registers(modbus, reg, 1, &val) == 1)
+        return val;
     return 0;   //nie udało się
 }
 

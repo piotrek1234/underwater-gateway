@@ -2,8 +2,9 @@
 #define TEMPHANDLER_H
 
 #include "handler.h"
+#include "modbusinterface.h"
 
-class TempHandler : public Handler
+class TempHandler : public Handler, public ModbusInterface
 {
 public:
     TempHandler();

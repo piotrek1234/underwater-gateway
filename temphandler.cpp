@@ -18,7 +18,8 @@ void TempHandler::set(QStringList)
 void TempHandler::get(QStringList)
 {
     //niezależnie od liczby parametrów wysłać pomiar temperatury
-    double temp = 20.4;
+    //double temp = 20.4;
+    double temp = modbus_->read(assignedRegister);
     emit response(QStringList() << QString(handlerType()) << QString::number(temp, 'f', 2));
 }
 

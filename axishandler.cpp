@@ -17,6 +17,8 @@ void AxisHandler::set(QStringList frame)
     {
         //0 - numer osi
         //1 - kroki
+        //todo: sprawdzić czy frame trzyma inty
+        modbus_->write(assignedRegisters.at(frame.at(1).toInt()), frame.at(2).toInt());
         emit response(QStringList() << QString(handlerType()) << frame);
     }
     else
@@ -43,11 +45,6 @@ void AxisHandler::get(QStringList frame)
     }
     else
         emit error("Wrong parameters count for Axis::get. Required 1, given "+QString::number(frame.length()));
-}
-
-void AxisHandler::setModbus(ModbusMaster *modbus)
-{
-    modbus_ = modbus;
 }
 
 void AxisHandler::setAxesCount(unsigned int count)

@@ -2,8 +2,9 @@
 #define PRESSUREHANDLER_H
 
 #include "handler.h"
+#include "modbusinterface.h"
 
-class PressureHandler : public Handler
+class PressureHandler : public Handler, public ModbusInterface
 {
 public:
     PressureHandler();

@@ -37,7 +37,8 @@ SOURCES += main.cpp \
     pressurehandler.cpp \
     modbusmaster.cpp \
     udp-stream/PracticalSocket.cpp \
-    cameraworker.cpp
+    cameraworker.cpp \
+    modbusinterface.cpp
 
 HEADERS += \
     tcpserver.h \
@@ -51,4 +52,5 @@ HEADERS += \
     pressurehandler.h \
     modbusmaster.h \
     udp-stream/PracticalSocket.h \
-    cameraworker.h
+    cameraworker.h \
+    modbusinterface.h
