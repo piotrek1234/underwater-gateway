@@ -13,7 +13,7 @@ void AxisHandler::set(QStringList frame)
         //0 - numer osi
         //1 - kroki
         //todo: sprawdzić czy frame trzyma inty
-        modbus_->write(assignedRegisters_.at(frame.at(1).toInt()), frame.at(2).toInt());
+        modbus_->write(getRegister(frame.at(1).toUInt()), frame.at(2).toInt());
         emit response(QStringList() << QString(handlerType()) << frame);
     }
     else
@@ -27,7 +27,7 @@ void AxisHandler::get(QStringList frame)
         if(frame.at(0).toInt() < axesCount_ && frame.at(0).toInt() >= 0)
         {
             //pobranie z modbusa
-            int value = modbus_->read(assignedRegisters_.at(frame.at(0).toInt()));
+            int value = modbus_->read(getRegister(frame.at(0).toUInt()));
             //int value = 10;
             //jeśli się udało, to wysyłamy dane:
             emit response(QStringList() << QString(handlerType()) << frame.at(0) << QString::number(value));

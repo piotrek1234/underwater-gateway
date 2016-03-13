@@ -15,7 +15,7 @@ void MotorHandler::set(QStringList frame)
 {
     if(frame.length() == 2)
     {
-        modbus_->write(assignedRegisters.at(frame.at(0).toInt()), frame.at(1).toInt());
+        modbus_->write(getRegister(frame.at(0).toUInt()), frame.at(1).toInt());
     }
     else
         emit error("Arguments count not valid. Required 2, given "+QString::number(frame.length()));
@@ -25,7 +25,7 @@ void MotorHandler::get(QStringList frame)
 {
     if(frame.length() == 1)
     {
-        int val = modbus_->read(assignedRegisters.at(frame.at(0).toInt()));
+        int val = modbus_->read(getRegister(frame.at(0).toUInt()));
         emit response(QStringList() << QString(handlerType()) << frame.at(0) << QString::number(val));
     }
     else
