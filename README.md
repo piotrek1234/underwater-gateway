@@ -12,3 +12,11 @@ Wymagane pakiety (testowana wersja):
 - libopencv-imgproc-dev (2.4.8+dfsg1-2ubuntu1)
 - libopencv-features2.4 (2.4.8+dfsg1-2ubuntu1)
 - libopencv-features-dev (2.4.8+dfsg1-2ubuntu1)
+
+Dostęp do urządzeń
+---
+Program wymaga uprawnień dostępu do /dev/tty*.
+Rozwiązanie dla Mint / Ubuntu:
+```
+$ sudo usermod -a -G dialout użytkownik
+```
