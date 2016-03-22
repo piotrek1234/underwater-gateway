@@ -13,7 +13,7 @@ void AxisHandler::set(QStringList frame)
         //0 - numer osi
         //1 - kroki
         //todo: sprawdzić czy frame trzyma inty
-        modbus_->write(getRegister(frame.at(1).toUInt()), frame.at(2).toInt());
+        modbus_->write(getRegister(frame.at(0).toUInt(), regType::write), frame.at(1).toInt());
         emit response(QStringList() << QString(handlerType()) << frame);
     }
     else
@@ -27,7 +27,7 @@ void AxisHandler::get(QStringList frame)
         if(frame.at(0).toInt() < axesCount_ && frame.at(0).toInt() >= 0)
         {
             //pobranie z modbusa
-            int value = modbus_->read(getRegister(frame.at(0).toUInt()));
+            int value = modbus_->read(getRegister(frame.at(0).toUInt(), regType::read));
             //int value = 10;
             //jeśli się udało, to wysyłamy dane:
             emit response(QStringList() << QString(handlerType()) << frame.at(0) << QString::number(value));
@@ -46,28 +46,42 @@ void AxisHandler::setAxesCount(unsigned int count)
 {
     if(count < axesCount_)
     {
-        assignedRegisters_.erase(assignedRegisters_.begin()+count, assignedRegisters_.end());
+        assignedReadRegisters_.erase(assignedReadRegisters_.begin()+count, assignedReadRegisters_.end());
+        assignedWriteRegisters_.erase(assignedWriteRegisters_.begin()+count, assignedWriteRegisters_.end());
     }
     else if(count > axesCount_)
     {
         for(unsigned int i=0; i<count-axesCount_; ++i)
-            assignedRegisters_.append(0);
+        {
+            assignedReadRegisters_.append(0);
+            assignedWriteRegisters_.append(0);
+        }
     }
     axesCount_ = count;
 }
 
-void AxisHandler::assignRegister(unsigned int axisNr, int regAddr)
+void AxisHandler::assignRegister(unsigned int axisNr, regType type, int regAddr)
 {
-    if((axisNr <= axesCount_) && (axisNr <= assignedRegisters_.size()))
-        assignedRegisters_[axisNr] = regAddr;
+    if((axisNr <= axesCount_) && (axisNr <= assignedReadRegisters_.size()))
+    {
+        if(type == regType::read)
+            assignedReadRegisters_[axisNr] = regAddr;
+        else if(type == regType::write)
+            assignedWriteRegisters_[axisNr] = regAddr;
+    }
     /*else
         emit error("Axis index out of range");*/
 }
 
-int AxisHandler::getRegister(unsigned int axisNr)
+int AxisHandler::getRegister(unsigned int axisNr, regType type)
 {
-    if((axisNr <= axesCount_) && (axisNr <= assignedRegisters_.size()))
-        return assignedRegisters_.at(axisNr);
+    if((axisNr <= axesCount_) && (axisNr <= assignedReadRegisters_.size()))
+    {
+        if(type == regType::read)
+            return assignedReadRegisters_.at(axisNr);
+        else if(type == regType::write)
+            return assignedWriteRegisters_.at(axisNr);
+    }
     /*else
     {
         emit error("Axis index out of range");

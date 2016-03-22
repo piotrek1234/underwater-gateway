@@ -15,11 +15,12 @@ public:
     virtual void get(QStringList frame);
     void setAxesCount(unsigned int count);
     unsigned int getAxesCount() { return axesCount_; }
-    void assignRegister(unsigned int axisNr, int regAddr);
-    int getRegister(unsigned int axisNr);
+    void assignRegister(unsigned int axisNr, regType type, int regAddr);
+    int getRegister(unsigned int axisNr, regType type);
     virtual char handlerType() const { return 'A'; }
 private:
-    QVector<int> assignedRegisters_;
+    QVector<int> assignedReadRegisters_;
+    QVector<int> assignedWriteRegisters_;
     unsigned int axesCount_;
 };
 

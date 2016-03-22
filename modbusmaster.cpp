@@ -1,6 +1,7 @@
 #include "modbusmaster.h"
 
-ModbusMaster::ModbusMaster(QString device, int slave, int baud=115200) : device_(device), baud_(baud), slave_(slave)
+ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long delay) : \
+    device_(device), baud_(baud), slave_(slave), delay_(delay)
 {
     modbus = modbus_new_rtu(device.toStdString().c_str(), baud, 'N', 8, 1);
     if(modbus == NULL)
@@ -25,8 +26,11 @@ ModbusMaster::~ModbusMaster()
 void ModbusMaster::write(int reg, int value)
 {
     if(modbus_write_register(modbus, reg, value) == 1)
+    {
+        QThread::msleep(delay_);
         return;
-    //zwracać bool z info czy się udało
+    }
+    std::cerr << "Writing modbus register failed.\n";
 }
 
 int ModbusMaster::read(int reg)
@@ -34,7 +38,9 @@ int ModbusMaster::read(int reg)
     //todo: sprawdzić co się dzieje przy ujemnych liczbach
     u_int16_t val;
     if(modbus_read_registers(modbus, reg, 1, &val) == 1)
+    {
+        QThread::msleep(delay_);
         return val;
-    return 0;   //nie udało się
+    }
+    std::cerr << "Reading modbus register failed.\n";
 }
-

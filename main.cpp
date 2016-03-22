@@ -5,8 +5,10 @@
 #include "temphandler.h"
 #include "pressurehandler.h"
 #include "motorhandler.h"
+#include "outputhandler.h"
 #include "camerahandler.h"
 #include "modbusmaster.h"
+#include "modbus_regs.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,37 +21,47 @@ int main(int argc, char *argv[])
     QObject::connect(&fp, SIGNAL(sendFrame(QString)), &s, SLOT(sendResponse(QString)));
 
     MotorHandler* mh = new MotorHandler(6);
-    mh->assignRegister(0, 110);
-    mh->assignRegister(1, 111);
-    mh->assignRegister(2, 112);
-    mh->assignRegister(3, 113);
-    mh->assignRegister(4, 114);
-    mh->assignRegister(5, 115);
+    mh->assignRegister(0, MB_CTRL_BLDC_1);
+    mh->assignRegister(1, MB_CTRL_BLDC_2);
+    mh->assignRegister(2, MB_CTRL_BLDC_3);
+    mh->assignRegister(3, MB_CTRL_BLDC_4);
+    mh->assignRegister(4, MB_CTRL_BLDC_5);
+    mh->assignRegister(5, MB_CTRL_BLDC_6);
 
     AxisHandler* ah = new AxisHandler(3);
-    ah->assignRegister(0, 100);
-    ah->assignRegister(1, 101);
-    ah->assignRegister(2, 102);
+    ah->assignRegister(0, regType::read, MB_STAT_STEPPER_1);
+    ah->assignRegister(1, regType::read, MB_STAT_STEPPER_2);
+    ah->assignRegister(2, regType::read, MB_STAT_STEPPER_3);
+    ah->assignRegister(0, regType::write, MB_CTRL_STEPPER_1);
+    ah->assignRegister(1, regType::write, MB_CTRL_STEPPER_2);
+    ah->assignRegister(2, regType::write, MB_CTRL_STEPPER_3);
 
     CameraHandler* ch = new CameraHandler(1);
 
     TempHandler *th = new TempHandler();
-    th->assignRegister(100);
+    th->assignRegister(9);
 
     PressureHandler* ph = new PressureHandler();
-    ph->assignRegister(110);
+    ph->assignRegister(8);
+
+    OutputHandler* oh = new OutputHandler(2);
+    oh->assignRegister(0, MB_CTRL_POWER_1);
+    oh->assignRegister(1, MB_CTRL_POWER_2);
 
     fp.addHandler(ah);
     fp.addHandler(th);
     fp.addHandler(ph);
     fp.addHandler(ch);
     fp.addHandler(mh);
+    fp.addHandler(oh);
 
-    ModbusMaster* modbus1 = new ModbusMaster("/dev/ttyUSB0", 100, 115200);
+    ModbusMaster* modbus1 = new ModbusMaster("/dev/ttyUSB0", 100);
+    //ModbusMaster* modbus2 = new ModbusMaster("/dev/ttySAC1", 101);
     ah->setModbus(modbus1);
+    mh->setModbus(modbus1);
     th->setModbus(modbus1);
     ph->setModbus(modbus1);
-    mh->setModbus(modbus1);
+    oh->setModbus(modbus1);
 
     s.start();
 

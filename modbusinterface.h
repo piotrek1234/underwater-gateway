@@ -3,6 +3,11 @@
 
 #include "modbusmaster.h"
 
+enum class regType{
+    read,
+    write,
+};
+
 class ModbusInterface
 {
 public:
