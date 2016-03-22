@@ -13,12 +13,26 @@ MotorHandler::~MotorHandler()
 
 void MotorHandler::set(QStringList frame)
 {
-    if(frame.length() == 2)
+    if(frame.at(0) == QString("*"))
+    {
+        if(frame.length() == motorsCount_+1)
+        {
+            u_int16_t* values = new u_int16_t[motorsCount_];
+            for(int i=1; i<=motorsCount_; ++i)
+                frame.at(i).toInt();
+            modbus_->writeMulti(getRegister(frame.at(0).toUInt()), motorsCount_, values);
+
+            delete [] values;
+        }
+        else
+            emit error("mało argsów");
+    }
+    else if(frame.length() == 2)
     {
         modbus_->write(getRegister(frame.at(0).toUInt()), frame.at(1).toInt());
     }
     else
-        emit error("Arguments count not valid. Required 2, given "+QString::number(frame.length()));
+        emit error("Arguments count not valid. Required 2 or 6, given "+QString::number(frame.length()));
 }
 
 void MotorHandler::get(QStringList frame)
@@ -27,6 +41,11 @@ void MotorHandler::get(QStringList frame)
     {
         int val = modbus_->read(getRegister(frame.at(0).toUInt()));
         emit response(QStringList() << QString(handlerType()) << frame.at(0) << QString::number(val));
+    }
+    else if(frame.at(0) == QString("*"))
+    {
+        //wszystkie silniki
+
     }
     else
         emit error("Arguments count not valid. Required 1, given "+QString::number(frame.length()));

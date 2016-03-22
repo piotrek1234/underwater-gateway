@@ -8,7 +8,21 @@ AxisHandler::AxisHandler(unsigned int axesCount)
 
 void AxisHandler::set(QStringList frame)
 {
-    if(frame.length() == 2)
+    if(frame.at(0) == QString("*"))
+    {
+        if(frame.length() == axesCount_+1)
+        {
+            u_int16_t* values = new u_int16_t[axesCount_];
+            for(int i=1; i<=axesCount_; ++i)
+                frame.at(i).toInt();
+            modbus_->writeMulti(getRegister(frame.at(0).toUInt(), regType::write), axesCount_, values);
+
+            delete [] values;
+        }
+        else
+            emit error("mało argsów");
+    }
+    else if(frame.length() == 2)
     {
         //0 - numer osi
         //1 - kroki
@@ -22,7 +36,11 @@ void AxisHandler::set(QStringList frame)
 
 void AxisHandler::get(QStringList frame)
 {
-    if(frame.length() == 1)
+    if(frame.length() == 0)
+    {
+        //wysłać wszystkie osie
+    }
+    else if(frame.length() == 1)
     {
         if(frame.at(0).toInt() < axesCount_ && frame.at(0).toInt() >= 0)
         {
