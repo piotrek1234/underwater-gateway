@@ -1,10 +1,9 @@
 #ifndef TEMPHANDLER_H
 #define TEMPHANDLER_H
 
-#include "handler.h"
 #include "modbusinterface.h"
 
-class TempHandler : public Handler, public ModbusInterface
+class TempHandler : public ModbusInterface
 {
 public:
     TempHandler();

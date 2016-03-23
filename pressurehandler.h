@@ -1,10 +1,9 @@
 #ifndef PRESSUREHANDLER_H
 #define PRESSUREHANDLER_H
 
-#include "handler.h"
 #include "modbusinterface.h"
 
-class PressureHandler : public Handler, public ModbusInterface
+class PressureHandler : public ModbusInterface
 {
 public:
     PressureHandler();

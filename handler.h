@@ -13,11 +13,12 @@ public:
     virtual void set(QStringList frame) = 0;
     virtual void get(QStringList frame) = 0;
     virtual char handlerType() const = 0;
-protected:
-    //Modbus modbus;
 signals:
     void response(QStringList);
     void error(QString);
+protected slots:
+    void finish(QStringList context, QStringList args);
+    void failure(QString content);
 };
 
 #endif // HANDLER_H

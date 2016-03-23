@@ -2,10 +2,9 @@
 #define AXISHANDLER_H
 
 #include <QVector>
-#include "handler.h"
 #include "modbusinterface.h"
 
-class AxisHandler : public Handler, public ModbusInterface
+class AxisHandler : public ModbusInterface
 {
 public:
     AxisHandler() : axesCount_(0) {}

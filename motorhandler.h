@@ -3,10 +3,13 @@
 
 #include <QVector>
 #include <QString>
-#include "handler.h"
 #include "modbusinterface.h"
+#include "modbuscommandread.h"
+#include "modbuscommandwrite.h"
+#include "modbuscommandmultiread.h"
+#include "modbuscommandmultiwrite.h"
 
-class MotorHandler : public Handler, public ModbusInterface
+class MotorHandler : public ModbusInterface
 {
 public:
     MotorHandler() : motorsCount_(0) {}

@@ -1,10 +1,9 @@
 #ifndef OUTPUTHANDLER_H
 #define OUTPUTHANDLER_H
 
-#include "handler.h"
 #include "modbusinterface.h"
 
-class OutputHandler : public Handler, public ModbusInterface
+class OutputHandler : public ModbusInterface
 {
 public:
     OutputHandler() : outputsCount_(0) {}

@@ -2,6 +2,7 @@
 #define MODBUSINTERFACE_H
 
 #include "modbusmaster.h"
+#include "handler.h"
 
 /**
  * @brief The regType enum indicates Modbus register type (read only, write only)
@@ -11,7 +12,7 @@ enum class regType{
     write,
 };
 
-class ModbusInterface
+class ModbusInterface : public Handler
 {
 public:
     ModbusInterface();
