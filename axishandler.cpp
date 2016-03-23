@@ -12,12 +12,13 @@ void AxisHandler::set(QStringList frame)
     {
         if(frame.length() == axesCount_+1)
         {
-            u_int16_t* values = new u_int16_t[axesCount_];
+            //u_int16_t* values = new u_int16_t[axesCount_];
+            QVector<int> values;
             for(int i=1; i<=axesCount_; ++i)
-                frame.at(i).toInt();
+                values.push_back(frame.at(i).toInt());
             modbus_->writeMulti(getRegister(frame.at(0).toUInt(), regType::write), axesCount_, values);
 
-            delete [] values;
+            //delete [] values;
         }
         else
             emit error("mało argsów");

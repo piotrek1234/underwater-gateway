@@ -33,36 +33,47 @@ void ModbusMaster::write(int reg, int value)
     std::cerr << "Writing modbus register failed.\n";
 }
 
-void ModbusMaster::writeMulti(int first, int n, u_int16_t *values)
+void ModbusMaster::writeMulti(int first, int n, QVector<int> values)
 {
-    if(modbus_write_registers(modbus, first, n, values) == n)
+    u_int16_t* vals = new u_int16_t[values.size()];
+    for(int i=0; i<values.size(); ++i)
+        vals[i] = values.at(i);
+
+    if(modbus_write_registers(modbus, first, n, vals) == n)
     {
         QThread::msleep(delay_);
+        delete [] vals;
         return;
     }
     std::cerr << "Writing modbus registers failed.\n";
+    delete [] vals;
 }
 
 int ModbusMaster::read(int reg)
 {
-    //todo: sprawdzić co się dzieje przy ujemnych liczbach
     u_int16_t val;
     if(modbus_read_registers(modbus, reg, 1, &val) == 1)
     {
         QThread::msleep(delay_);
-        return val;
+        return static_cast<int16_t>(val);
     }
     std::cerr << "Reading modbus register failed.\n";
+    return 0;
 }
 
-u_int16_t *ModbusMaster::readMulti(int first, int n)
+QVector<int> ModbusMaster::readMulti(int first, int n)
 {
-    //todo: wyciek. zmienić wskaźnik na kontener
     u_int16_t* val = new u_int16_t[n];
     if(modbus_read_registers(modbus, first, 1, val) == n)
     {
+        QVector<int> values;
+        for(int i=0; i<n; ++i)
+            values.push_back(static_cast<int>(val[i]));
+        delete [] val;
         QThread::msleep(delay_);
-        return val;
+        return values;
     }
     std::cerr << "Reading modbus register failed.\n";
+    delete [] val;
+    return QVector<int>();
 }

@@ -3,6 +3,9 @@
 
 #include "modbusmaster.h"
 
+/**
+ * @brief The regType enum indicates Modbus register type (read only, write only)
+ */
 enum class regType{
     read,
     write,

@@ -17,12 +17,12 @@ void MotorHandler::set(QStringList frame)
     {
         if(frame.length() == motorsCount_+1)
         {
-            u_int16_t* values = new u_int16_t[motorsCount_];
+            QVector<int> values;
             for(int i=1; i<=motorsCount_; ++i)
-                frame.at(i).toInt();
+                values.push_back(frame.at(i).toInt());
             modbus_->writeMulti(getRegister(frame.at(0).toUInt()), motorsCount_, values);
 
-            delete [] values;
+            //delete [] values;
         }
         else
             emit error("mało argsów");
