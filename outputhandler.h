@@ -18,6 +18,7 @@ public:
     virtual char handlerType() const { return 'O'; }
 private:
     int outputsCount_;
+    QVector<int> assignedRegisters;
 };
 
 #endif // OUTPUTHANDLER_H

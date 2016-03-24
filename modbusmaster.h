@@ -8,7 +8,10 @@
 #include <QList>
 #include <QTimer>
 #include <iostream>
-#include <modbuscommand.h>
+#include "modbuscommandread.h"
+#include "modbuscommandwrite.h"
+#include "modbuscommandmultiread.h"
+#include "modbuscommandmultiwrite.h"
 #include <modbus/modbus.h>
 
 class ModbusMaster : public QThread

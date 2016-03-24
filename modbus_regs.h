@@ -5,7 +5,7 @@
 
 /* Control section					*/
 #define MB_SECTION_CTRL_ADDR	0	/* Control section start address											*/
-#define MB_SECTION_CTRL_SIZE	15	/* Control section number of registers										*/
+#define MB_SECTION_CTRL_SIZE	19	/* Control section number of registers										*/
 
 #define MB_CTRL_BLDC_1			0	/* BLDC 1 power to set (0 on reset); Range: <-1000,1000>					*/
 #define MB_CTRL_BLDC_2			1	/* BLDC 2 power to set (0 on reset); Range: <-1000,1000>					*/
@@ -14,29 +14,34 @@
 #define MB_CTRL_BLDC_5			4	/* BLDC 5 power to set (0 on reset); Range: <-1000,1000>					*/
 #define MB_CTRL_BLDC_6			5	/* BLDC 6 power to set (0 on reset); Range: <-1000,1000>					*/
 
-#define MB_CTRL_STEPPER_1		6	/* Stepper Motor 1 position to set (0 on reset); Range: <-18000,18000>		*/
-#define MB_CTRL_STEPPER_2		7	/* Stepper Motor 2 position to set (0 on reset); Range: <-18000,18000>		*/
-#define MB_CTRL_STEPPER_3		8	/* Stepper Motor 3 position to set (0 on reset); Range: <-18000,18000>		*/
-#define MB_CTRL_STEPPER_4		9	/* Stepper Motor 4 position to set (0 on reset); Range: <-18000,18000>		*/
+#define MB_CTRL_STEPPER_1_POS	6	/* Stepper Motor 1 position to set (0 on reset); Range: <-18000,18000>		*/
+#define MB_CTRL_STEPPER_2_POS	7	/* Stepper Motor 2 position to set (0 on reset); Range: <-18000,18000>		*/
+#define MB_CTRL_STEPPER_3_POS	8	/* Stepper Motor 3 position to set (0 on reset); Range: <-18000,18000>		*/
+#define MB_CTRL_STEPPER_4_POS	9	/* Stepper Motor 4 position to set (0 on reset); Range: <-18000,18000>		*/
 
-#define MB_CTRL_POWER_1			10	/* Power Output 1 control register (0 on reset); Range <0,1>				*/
-#define MB_CTRL_POWER_2			11	/* Power Output 2 control register (0 on reset); Range <0,1>				*/
-#define MB_CTRL_POWER_3			12	/* Power Output 3 control register (0 on reset); Range <0,1>				*/
+#define MB_CTRL_STEPPER_1_SPEED	10	/* Stepper Motor 1 speed to set (360 on reset); Range: <360,3600>			*/
+#define MB_CTRL_STEPPER_2_SPEED	11	/* Stepper Motor 1 speed to set (360 on reset); Range: <360,3600>			*/
+#define MB_CTRL_STEPPER_3_SPEED	12	/* Stepper Motor 1 speed to set (360 on reset); Range: <360,3600>			*/
+#define MB_CTRL_STEPPER_4_SPEED	13	/* Stepper Motor 1 speed to set (360 on reset); Range: <360,3600>			*/
 
-#define MB_CTRL_MODE			13	/* Driver Mode Register (0 on reset); Range: Specified bit flags (below)	*/
-#define MB_CTRL_CMD				14	/* Driver Command Register (0 on reset); Range: Specified bit flags (below)	*/
+#define MB_CTRL_POWER_1			14	/* Power Output 1 control register (0 on reset); Range <0,1>				*/
+#define MB_CTRL_POWER_2			15	/* Power Output 2 control register (0 on reset); Range <0,1>				*/
+#define MB_CTRL_POWER_3			16	/* Power Output 3 control register (0 on reset); Range <0,1>				*/
+
+#define MB_CTRL_MODE			17	/* Driver Mode Register (0 on reset); Range: Specified bit flags (below)	*/
+#define MB_CTRL_CMD				18	/* Driver Command Register (0 on reset); Range: Specified bit flags (below)	*/
 
 /* Status section (READ ONLY!)		*/
-#define MB_SECTION_STAT_ADDR	15	/* Status section start address												*/
+#define MB_SECTION_STAT_ADDR	20	/* Status section start address												*/
 #define MB_SECTION_STAT_SIZE	6	/* Status section number of registers										*/
 
-#define MB_STAT_STEPPER_1		15	/* Stepper Motor 1 current position (0 on reset); Range: <-18000,18000>		*/
-#define MB_STAT_STEPPER_2		16	/* Stepper Motor 2 current position (0 on reset); Range: <-18000,18000>		*/
-#define MB_STAT_STEPPER_3		17	/* Stepper Motor 3 current position (0 on reset); Range: <-18000,18000>		*/
-#define MB_STAT_STEPPER_4		18	/* Stepper Motor 4 current position (0 on reset); Range: <-18000,18000>		*/
+#define MB_STAT_STEPPER_1		20	/* Stepper Motor 1 current position (0 on reset); Range: <-18000,18000>		*/
+#define MB_STAT_STEPPER_2		21	/* Stepper Motor 2 current position (0 on reset); Range: <-18000,18000>		*/
+#define MB_STAT_STEPPER_3		22	/* Stepper Motor 3 current position (0 on reset); Range: <-18000,18000>		*/
+#define MB_STAT_STEPPER_4		23	/* Stepper Motor 4 current position (0 on reset); Range: <-18000,18000>		*/
 
-#define MB_STAT_DRIVER			19	/* Driver Status Register (0 on reset); Range: Specified bit flags (below)	*/
-#define MB_STAT_RUNTIME			20	/* Time from last power on (in seconds)										*/
+#define MB_STAT_DRIVER			24	/* Driver Status Register (0 on reset); Range: Specified bit flags (below)	*/
+#define MB_STAT_RUNTIME			25	/* Time from last power on (in seconds)										*/
 
 /**************************************************END OF MODBUS REGISTERS***************************************/
 

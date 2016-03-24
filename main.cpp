@@ -32,9 +32,12 @@ int main(int argc, char *argv[])
     ah->assignRegister(0, regType::read, MB_STAT_STEPPER_1);
     ah->assignRegister(1, regType::read, MB_STAT_STEPPER_2);
     ah->assignRegister(2, regType::read, MB_STAT_STEPPER_3);
-    ah->assignRegister(0, regType::write, MB_CTRL_STEPPER_1);
-    ah->assignRegister(1, regType::write, MB_CTRL_STEPPER_2);
-    ah->assignRegister(2, regType::write, MB_CTRL_STEPPER_3);
+    ah->assignRegister(0, regType::write, MB_CTRL_STEPPER_1_POS);
+    ah->assignRegister(1, regType::write, MB_CTRL_STEPPER_2_POS);
+    ah->assignRegister(2, regType::write, MB_CTRL_STEPPER_3_POS);
+    ah->assignRegister(0, regType::speed, MB_CTRL_STEPPER_1_SPEED);
+    ah->assignRegister(1, regType::speed, MB_CTRL_STEPPER_2_SPEED);
+    ah->assignRegister(2, regType::speed, MB_CTRL_STEPPER_3_SPEED);
 
     CameraHandler* ch = new CameraHandler(1);
 

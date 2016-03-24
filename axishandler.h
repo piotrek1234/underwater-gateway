@@ -4,6 +4,15 @@
 #include <QVector>
 #include "modbusinterface.h"
 
+/**
+ * @brief The regType enum indicates Modbus register type (read only, write only)
+ */
+enum class regType{
+    read,
+    write,
+    speed
+};
+
 class AxisHandler : public ModbusInterface
 {
 public:
@@ -20,6 +29,7 @@ public:
 private:
     QVector<int> assignedReadRegisters_;
     QVector<int> assignedWriteRegisters_;
+    QVector<int> assignedSpeedRegisters_;
     unsigned int axesCount_;
 };
 

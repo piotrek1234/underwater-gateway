@@ -4,10 +4,6 @@
 #include <QVector>
 #include <QString>
 #include "modbusinterface.h"
-#include "modbuscommandread.h"
-#include "modbuscommandwrite.h"
-#include "modbuscommandmultiread.h"
-#include "modbuscommandmultiwrite.h"
 
 class MotorHandler : public ModbusInterface
 {

@@ -17,7 +17,7 @@ signals:
     void response(QStringList);
     void error(QString);
 protected slots:
-    void finish(QStringList context, QStringList args);
+    virtual void finish(QStringList context, QStringList args);
     void failure(QString content);
 };
 

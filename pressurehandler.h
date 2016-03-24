@@ -15,6 +15,9 @@ public:
     int getRegister();
 private:
     int assignedRegister;
+    static const int PRESS_DIV = 100;
+private slots:
+    virtual void finish(QStringList context, QStringList args);
 };
 
 #endif // PRESSUREHANDLER_H
