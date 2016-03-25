@@ -1,7 +1,7 @@
 #include "modbusmaster.h"
 
 ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long delay) : \
-    device_(device), baud_(baud), slave_(slave), delay_(delay)
+    device_(device), baud_(baud), slave_(slave), delay_(delay), busy_(false)
 {
     modbus = modbus_new_rtu(device.toStdString().c_str(), baud, 'N', 8, 1);
     if(modbus == NULL)
@@ -15,6 +15,9 @@ ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long de
         modbus_free(modbus);
         return;
     }
+
+    timer.setInterval(delay);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(reactivate()));
 }
 
 ModbusMaster::~ModbusMaster()
@@ -83,21 +86,39 @@ void ModbusMaster::addCommand(ModbusCommand *cmd)
     commands_.push_back(cmd);
     //ewentualnie odpalić timer
     //testowo:
-    process();
+    if(!busy_)
+        process();
 }
 
 void ModbusMaster::process()
 {
     if(!commands_.isEmpty())
     {
+        busy_ = true;
         ModbusCommand* cmd = commands_.back();
         commands_.pop_front();
 
         cmd->execute(this);
-        cmd->deleteLater();
+        //cmd->deleteLater();
+        timer.start();
     }
     else
     {
-        //ewentualnie wyłączyć timer
+        timer.stop();
     }
+
+
+}
+
+void ModbusMaster::reactivate()
+{
+    std::cout << "Timer timeout\n";
+    timer.stop();
+
+    if(!commands_.isEmpty())
+    {
+        process();
+    }
+    else
+        busy_ = false;
 }

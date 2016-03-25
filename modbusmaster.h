@@ -33,8 +33,10 @@ private:
     unsigned long delay_;
     QList<ModbusCommand*> commands_;
     QTimer timer;
+    bool busy_;
 private slots:
     void process();
+    void reactivate();
 };
 
 #endif // MODBUSMASTER_H

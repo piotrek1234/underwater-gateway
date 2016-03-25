@@ -102,7 +102,7 @@ void AxisHandler::set(QStringList frame)
 
 void AxisHandler::get(QStringList frame)
 {
-    if(frame.length() == 0)
+    /*if(frame.length() == 0)
     {
         //wysłać wszystkie osie
     }
@@ -123,7 +123,48 @@ void AxisHandler::get(QStringList frame)
         }
     }
     else
-        emit error("Wrong parameters count for Axis:get. Required 1, given "+QString::number(frame.length()));
+        emit error("Wrong parameters count for Axis:get. Required 1, given "+QString::number(frame.length()));*/
+    QStringList context = QStringList() << QString(handlerType()) << frame.at(0);
+    ModbusCommand* cmd;
+    bool ok = false;
+
+    if(frame.length() == 1)
+    {
+        if(frame.at(0) == QString("*"))
+        {
+            cmd = new ModbusCommandMultiread(context, getRegister(0, regType::read), axesCount_);
+        }
+        else
+        {
+            cmd = new ModbusCommandRead(context, getRegister(frame.at(0).toInt(), regType::read));
+        }
+        ok = true;
+    }
+    else if(frame.length() == 2)
+    {
+        if(frame.at(0) == QString("s"))
+        {
+            if(frame.at(1) == QString("*"))
+            {
+                cmd = new ModbusCommandMultiread(context, getRegister(0, regType::speed), axesCount_);
+            }
+            else
+            {
+                cmd = new ModbusCommandRead(context, getRegister(frame.at(1).toInt(), regType::speed));
+            }
+        }
+        else
+            emit error("Two arguments given, but first is not 's'");
+    }
+    else
+        emit error("Arguments count not valid. Required 1 or 2, given "+QString::number(frame.length()));
+
+    if(ok)
+    {
+        connect(cmd, SIGNAL(done(QStringList,QStringList)), this, SLOT(finish(QStringList,QStringList)));
+        connect(cmd, SIGNAL(error(QString)), this, SLOT(failure(QString)));
+        modbus_->addCommand(cmd);
+    }
 }
 
 void AxisHandler::setAxesCount(unsigned int count)

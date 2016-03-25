@@ -10,6 +10,11 @@
 #include "modbusmaster.h"
 #include "modbus_regs.h"
 
+//todo:
+// sprawdzić czy konwersja int-u_int16_t-int16_t nie sypie się na odroidzie
+// problem z usuwaniem cmd po jego wykonaniu
+// dopracować kamery
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
