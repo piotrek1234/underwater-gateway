@@ -130,6 +130,8 @@ void AxisHandler::get(QStringList frame)
 
     if(frame.length() == 1)
     {
+        context << frame.at(0);
+
         if(frame.at(0) == QString("*"))
         {
             cmd = new ModbusCommandMultiread(context, getRegister(0, regType::read), axesCount_);
@@ -142,6 +144,8 @@ void AxisHandler::get(QStringList frame)
     }
     else if(frame.length() == 2)
     {
+        context << frame.at(0) << frame.at(1);
+
         if(frame.at(0) == QString("s"))
         {
             if(frame.at(1) == QString("*"))
