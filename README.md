@@ -25,3 +25,4 @@ Komunikacja
 ---
 Standardowo komunikacja z GCS odbywa się przez TCP na porcie 6001.
 [Format ramek](../../wiki/Format-ramek)
+[Sposób działania](../../wiki/Sposób-działania)
