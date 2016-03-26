@@ -11,8 +11,8 @@ public:
     virtual ~ModbusCommandMultiwrite() {}
     virtual void execute(ModbusMaster *modbus);
 private:
-    QVector<int> values_;
     int num_;
+    QVector<int> values_;
 };
 
 #endif // MODBUSCOMMANDMULTIWRITE_H

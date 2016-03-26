@@ -9,10 +9,8 @@ CameraHandler::CameraHandler(unsigned int camerasCount) : host_("127.0.0.1")
 
 CameraHandler::~CameraHandler()
 {
-    //powyłączać kamery
     for(int i=0; i<cams_.size(); ++i)
     {
-        //cams_.at(i).first->turnedOn = false;
         cams_.at(i).first->stop();
     }
 }
@@ -51,10 +49,8 @@ void CameraHandler::get(QStringList frame)
 
 void CameraHandler::set(QStringList frame)
 {
-    //2 parametry - on/off:
-    // {indeks}, {włączona:1,0}
-    //6 - wszystko
-    // {indeks},{szerokość},{wysokość},{fps},{włączona:1,0},{port}
+    //2 parametry - on/off: {indeks}, {włączona:1,0}
+    //6 - wszystko: {indeks},{szerokość},{wysokość},{fps},{włączona:1,0},{port}
     if(frame.length() > 1)
     {
         if(frame.at(0) == "H")
@@ -121,8 +117,6 @@ void CameraHandler::set(QStringList frame)
                             th = new QThread;
                             std::cout << "przesuwanie do wątku\n";
                             cam->moveToThread(th);
-                            //connect(th, &QThread::finished, cam, &QObject::deleteLater);
-                            //cam->stream();
                             connect(th, SIGNAL(started()), cam, SLOT(stream()));
                             connect(cam, SIGNAL(streamEnded()), th, SLOT(quit()));
                             connect(th, SIGNAL(finished()), th, SLOT(deleteLater()));
@@ -130,13 +124,9 @@ void CameraHandler::set(QStringList frame)
                             th->start();
                         }
                     }
-
                 }
                 else
                 {
-                    //QThread* th = cams_.at(frame.at(0).toUInt()).second;
-                    //cam = qobject_cast<CameraWorker*>(th);
-                    std::cout << "CameraHandler::set(). Calling CameraWorker::stop().\n";
                     cam->stop();
                 }
             }
@@ -170,18 +160,6 @@ void CameraHandler::setCamerasCount(unsigned int count)
     }
     camerasCount_ = count;
 }
-
-/*void CameraHandler::setParameters(unsigned int camNr, CameraWorker *params)
-{
-    if((camNr <= camerasCount_) && (camNr <= cams.size()))
-        cams[camNr] = params;
-}
-
-CameraWorker *CameraHandler::getParameters(unsigned int camNr)
-{
-   if((camNr <= camerasCount_) && (camNr <= cams.size()))
-        return cams.at(camNr);
-}*/
 
 bool CameraHandler::setHostAddress(QString address)
 {

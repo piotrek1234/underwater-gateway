@@ -5,13 +5,16 @@ ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long de
 {
     modbus_ = modbus_new_rtu(device.toStdString().c_str(), baud, 'N', 8, 1);
     if(modbus_ == NULL)
-        return; //lipa, nie udało się
+    {
+        std::cerr << "Could not initialize modbus\n";
+        return;
+    }
 
     modbus_set_slave(modbus_, slave);
 
     if (modbus_connect(modbus_) == -1)
     {
-        //fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
+        std::cerr << "Modbus connection failed\n";
         modbus_free(modbus_);
         return;
     }
@@ -84,8 +87,7 @@ QVector<int> ModbusMaster::readMulti(int first, int n)
 void ModbusMaster::addCommand(ModbusCommand *cmd)
 {
     commands_.push_back(cmd);
-    //ewentualnie odpalić timer
-    //testowo:
+
     if(!busy_)
         process();
 }
@@ -96,11 +98,12 @@ void ModbusMaster::process()
     {
         busy_ = true;
         ModbusCommand* cmd = commands_.back();
-        commands_.pop_front();
+        commands_.pop_back();
 
         cmd->execute(this);
-        //cmd->deleteLater();
         timer_.start();
+
+        cmd->deleteLater();
     }
     else
     {
@@ -112,7 +115,6 @@ void ModbusMaster::process()
 
 void ModbusMaster::reactivate()
 {
-    //std::cout << "Timer timeout\n";
     timer_.stop();
 
     if(!commands_.isEmpty())

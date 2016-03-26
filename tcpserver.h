@@ -16,12 +16,12 @@ public:
 private:
     int port_;
     QTcpSocket* client_;
+public slots:
+    void sendResponse(QString frame);
 private slots:
     void newClient();
     void removeClient();
     void grabFrame();
-public slots:
-    void sendResponse(QString frame);
 signals:
     void frameContent(QString);
 };

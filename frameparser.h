@@ -20,7 +20,6 @@ signals:
     void sendFrame(QString);
 private:
     QMap<QString, Handler*> handlers_;
-
 public slots:
     void parseFrame(QString frame);
     void buildFrame(QStringList args);  //dla faktycznych odpowiedzi

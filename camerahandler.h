@@ -19,8 +19,6 @@ public:
     virtual void set(QStringList frame);
     void setCamerasCount(unsigned int count);
     unsigned int getCamerasCount() { return camerasCount_; }
-    //void setParameters(unsigned int camNr, CameraWorker* params);
-    //CameraWorker* getParameters(unsigned int camNr);
     bool setHostAddress(QString address);
     virtual char handlerType() const { return 'C'; }
 private:

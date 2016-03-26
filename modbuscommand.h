@@ -14,12 +14,12 @@ public:
     ModbusCommand(QStringList context, int address) : context_(context), address_(address) {}
     virtual ~ModbusCommand() {}
     virtual void execute(ModbusMaster* modbus) = 0;
-signals:
-    void done(QStringList context, QStringList effect);
-    void error(QString);
 protected:
     QStringList context_;
     int address_;
+signals:
+    void done(QStringList context, QStringList effect);
+    void error(QString);
 };
 
 #endif // MODBUSCOMMAND_H
