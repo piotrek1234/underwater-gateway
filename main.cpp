@@ -13,7 +13,7 @@
 //todo:
 // sprawdzić czy konwersja int-u_int16_t-int16_t nie sypie się na odroidzie
 // problem z usuwaniem cmd po jego wykonaniu
-// dopracować kamery
+// dopracować kamery: zrobić delay pomiędzy ramkami dla kamer, problem analogiczny jak przy modbusie
 
 int main(int argc, char *argv[])
 {
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     ah->assignRegister(1, regType::speed, MB_CTRL_STEPPER_2_SPEED);
     ah->assignRegister(2, regType::speed, MB_CTRL_STEPPER_3_SPEED);
 
-    CameraHandler* ch = new CameraHandler(1);
+    CameraHandler* ch = new CameraHandler(2);
 
     TempHandler *th = new TempHandler();
     th->assignRegister(9);

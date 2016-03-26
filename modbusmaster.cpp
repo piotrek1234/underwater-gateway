@@ -1,34 +1,34 @@
 #include "modbusmaster.h"
 
 ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long delay) : \
-    device_(device), baud_(baud), slave_(slave), delay_(delay), busy_(false)
+    device_(device), slave_(slave), baud_(baud), delay_(delay), busy_(false)
 {
-    modbus = modbus_new_rtu(device.toStdString().c_str(), baud, 'N', 8, 1);
-    if(modbus == NULL)
+    modbus_ = modbus_new_rtu(device.toStdString().c_str(), baud, 'N', 8, 1);
+    if(modbus_ == NULL)
         return; //lipa, nie udało się
 
-    modbus_set_slave(modbus, slave);
+    modbus_set_slave(modbus_, slave);
 
-    if (modbus_connect(modbus) == -1)
+    if (modbus_connect(modbus_) == -1)
     {
         //fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
-        modbus_free(modbus);
+        modbus_free(modbus_);
         return;
     }
 
-    timer.setInterval(delay);
-    connect(&timer, SIGNAL(timeout()), this, SLOT(reactivate()));
+    timer_.setInterval(delay);
+    connect(&timer_, SIGNAL(timeout()), this, SLOT(reactivate()));
 }
 
 ModbusMaster::~ModbusMaster()
 {
-    modbus_close(modbus);
-    modbus_free(modbus);
+    modbus_close(modbus_);
+    modbus_free(modbus_);
 }
 
 void ModbusMaster::write(int reg, int value)
 {
-    if(modbus_write_register(modbus, reg, value) == 1)
+    if(modbus_write_register(modbus_, reg, value) == 1)
     {
         //QThread::msleep(delay_);
         return;
@@ -42,7 +42,7 @@ void ModbusMaster::writeMulti(int first, int n, QVector<int> values)
     for(int i=0; i<values.size(); ++i)
         vals[i] = values.at(i);
 
-    if(modbus_write_registers(modbus, first, n, vals) == n)
+    if(modbus_write_registers(modbus_, first, n, vals) == n)
     {
         //QThread::msleep(delay_);
         delete [] vals;
@@ -55,7 +55,7 @@ void ModbusMaster::writeMulti(int first, int n, QVector<int> values)
 int ModbusMaster::read(int reg)
 {
     u_int16_t val;
-    if(modbus_read_registers(modbus, reg, 1, &val) == 1)
+    if(modbus_read_registers(modbus_, reg, 1, &val) == 1)
     {
         //QThread::msleep(delay_);
         return static_cast<int16_t>(val);
@@ -67,7 +67,7 @@ int ModbusMaster::read(int reg)
 QVector<int> ModbusMaster::readMulti(int first, int n)
 {
     u_int16_t* val = new u_int16_t[n];
-    if(modbus_read_registers(modbus, first, n, val) == n)
+    if(modbus_read_registers(modbus_, first, n, val) == n)
     {
         QVector<int> values;
         for(int i=0; i<n; ++i)
@@ -100,11 +100,11 @@ void ModbusMaster::process()
 
         cmd->execute(this);
         //cmd->deleteLater();
-        timer.start();
+        timer_.start();
     }
     else
     {
-        timer.stop();
+        timer_.stop();
     }
 
 
@@ -112,8 +112,8 @@ void ModbusMaster::process()
 
 void ModbusMaster::reactivate()
 {
-    std::cout << "Timer timeout\n";
-    timer.stop();
+    //std::cout << "Timer timeout\n";
+    timer_.stop();
 
     if(!commands_.isEmpty())
     {

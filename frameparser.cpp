@@ -10,15 +10,15 @@ FrameParser::~FrameParser()
 
 void FrameParser::addHandler(Handler *handler)
 {
-    handlers.insert(QString(handler->handlerType()), handler);
+    handlers_.insert(QString(handler->handlerType()), handler);
     QObject::connect(handler, SIGNAL(response(QStringList)), this, SLOT(buildFrame(QStringList)));
     QObject::connect(handler, SIGNAL(error(QString)), this, SLOT(buildErrorFrame(QString)));
 }
 
 Handler *FrameParser::getHandler(char type)
 {
-    auto it = handlers.find(QString(type));
-    if(it != handlers.end())
+    auto it = handlers_.find(QString(type));
+    if(it != handlers_.end())
         return it.value();
     return nullptr;
 }
@@ -41,8 +41,8 @@ void FrameParser::parseFrame(QString frame)
     }
 
     Handler* handler;
-    auto it = handlers.find(args.at(1));
-    if(it == handlers.end())
+    auto it = handlers_.find(args.at(1));
+    if(it == handlers_.end())
     {
         buildErrorFrame("No known handler for type: "+args.at(1));
         return;

@@ -19,7 +19,7 @@ public:
     int getRegister(unsigned int motor);
     virtual char handlerType() const { return 'M'; }
 private:
-    QVector<int> assignedRegisters;
+    QVector<int> assignedRegisters_;
     unsigned int motorsCount_;
 };
 

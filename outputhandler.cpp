@@ -8,17 +8,19 @@ OutputHandler::OutputHandler(unsigned int outputsCount)
 
 void OutputHandler::assignRegister(unsigned int outputNr, int regAddr)
 {
-    if((outputNr <= outputsCount_) && (outputNr <= assignedRegisters.size()))
-            assignedRegisters[outputNr] = regAddr;
+    if((outputNr <= outputsCount_) && (outputNr <= assignedRegisters_.size()))
+            assignedRegisters_[outputNr] = regAddr;
         else
         emit error("Output index out of range");
 }
 
 int OutputHandler::getRegister(unsigned int outputNr)
 {
-    if((outputNr <= outputsCount_) && (outputNr <= assignedRegisters.size()))
-            return assignedRegisters.at(outputNr);
-        emit error("Output index out of range");
+    if((outputNr <= outputsCount_) && (outputNr <= assignedRegisters_.size()))
+            return assignedRegisters_.at(outputNr);
+
+    emit error("Output index out of range");
+    return -1;
 }
 
 void OutputHandler::set(QStringList frame)
@@ -88,12 +90,12 @@ void OutputHandler::setOutputsCount(unsigned int count)
 {
     if(count < outputsCount_)
         {
-            assignedRegisters.erase(assignedRegisters.begin()+count, assignedRegisters.end());
+            assignedRegisters_.erase(assignedRegisters_.begin()+count, assignedRegisters_.end());
         }
         else if(count > outputsCount_)
         {
             for(unsigned int i=0; i<count-outputsCount_; ++i)
-                assignedRegisters.append(0);
+                assignedRegisters_.append(0);
         }
         outputsCount_ = count;
 }

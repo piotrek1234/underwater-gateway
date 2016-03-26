@@ -110,28 +110,30 @@ void MotorHandler::setMotorsCount(unsigned int count)
 {
     if(count < motorsCount_)
     {
-        assignedRegisters.erase(assignedRegisters.begin()+count, assignedRegisters.end());
+        assignedRegisters_.erase(assignedRegisters_.begin()+count, assignedRegisters_.end());
     }
     else if(count > motorsCount_)
     {
         for(unsigned int i=0; i<count-motorsCount_; ++i)
-            assignedRegisters.append(0);
+            assignedRegisters_.append(0);
     }
     motorsCount_ = count;
 }
 
 void MotorHandler::assignRegister(unsigned int motorNr, int regAddr)
 {
-    if((motorNr <= motorsCount_) && (motorNr <= assignedRegisters.size()))
-        assignedRegisters[motorNr] = regAddr;
+    if((motorNr <= motorsCount_) && (motorNr <= assignedRegisters_.size()))
+        assignedRegisters_[motorNr] = regAddr;
     else
         emit error("Motor index out of range");
 }
 
 int MotorHandler::getRegister(unsigned int motor)
 {
-    if((motor <= motorsCount_) && (motor <= assignedRegisters.size()))
-        return assignedRegisters.at(motor);
+    if((motor <= motorsCount_) && (motor <= assignedRegisters_.size()))
+        return assignedRegisters_.at(motor);
+
     emit error("Motor index out of range");
+    return -1;
 }
 

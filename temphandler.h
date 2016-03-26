@@ -14,7 +14,7 @@ public:
     void assignRegister(int regAddr);
     int getRegister();
 private:
-    int assignedRegister;
+    int assignedRegister_;
     static const int TEMP_DIV = 100;
 private slots:
     virtual void finish(QStringList context, QStringList args);

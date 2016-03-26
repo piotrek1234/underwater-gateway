@@ -31,12 +31,12 @@ void TempHandler::get(QStringList)
 
 void TempHandler::assignRegister(int regAddr)
 {
-    assignedRegister = regAddr;
+    assignedRegister_ = regAddr;
 }
 
 int TempHandler::getRegister()
 {
-    return assignedRegister;
+    return assignedRegister_;
 }
 
 void TempHandler::finish(QStringList context, QStringList args)

@@ -30,12 +30,12 @@ void PressureHandler::get(QStringList)
 
 void PressureHandler::assignRegister(int regAddr)
 {
-    assignedRegister = regAddr;
+    assignedRegister_ = regAddr;
 }
 
 int PressureHandler::getRegister()
 {
-    return assignedRegister;
+    return assignedRegister_;
 }
 
 void PressureHandler::finish(QStringList context, QStringList args)

@@ -29,10 +29,10 @@ private:
     QString device_;
     int slave_;
     int baud_;
-    modbus_t* modbus;
     unsigned long delay_;
+    modbus_t* modbus_;
     QList<ModbusCommand*> commands_;
-    QTimer timer;
+    QTimer timer_;
     bool busy_;
 private slots:
     void process();

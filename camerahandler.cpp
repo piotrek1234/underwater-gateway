@@ -12,7 +12,8 @@ CameraHandler::~CameraHandler()
     //powyłączać kamery
     for(int i=0; i<cams_.size(); ++i)
     {
-        cams_.at(i).first->turnedOn = false;
+        //cams_.at(i).first->turnedOn = false;
+        cams_.at(i).first->stop();
     }
 }
 void CameraHandler::get(QStringList frame)
@@ -76,6 +77,8 @@ void CameraHandler::set(QStringList frame)
         {
             unsigned int nr = frame.at(0).toUInt();
 
+            bool turnOn = false;
+
             if(nr < cams_.size())
             {
                 CameraWorker* cam = cams_.at(nr).first;
@@ -86,12 +89,12 @@ void CameraHandler::set(QStringList frame)
                     cam->res_w = frame.at(1).toUInt();
                     cam->res_h = frame.at(2).toUInt();
                     cam->fps = frame.at(3).toUInt();
-                    cam->turnedOn = static_cast<bool>(frame.at(4).toInt());
+                    turnOn = static_cast<bool>(frame.at(4).toInt());
                     cam->port = frame.at(5).toUInt();
                 }
                 else if(frame.length() == 2)
                 {
-                    cam->turnedOn = static_cast<bool>(frame.at(1).toUInt());
+                    turnOn = static_cast<bool>(frame.at(1).toInt());
                 }
                 else
                 {
@@ -102,22 +105,38 @@ void CameraHandler::set(QStringList frame)
                 emit response(QStringList() << QString(handlerType()) << QString::number(cam->device) << \
                               QString::number(cam->res_w) << QString::number(cam->res_h) << \
                               QString::number(cam->fps) << \
-                              QString::number(static_cast<unsigned int>(cam->turnedOn)) << \
+                              /*QString::number(static_cast<unsigned int>(cam->turnedOn)) << \*/
+                              QString::number(static_cast<unsigned int>(turnOn)) << \
                               host_ << QString::number(cam->port));
 
-                if(cam->turnedOn)
+                if(turnOn)
                 {
-                    //włącz stream
-                    QThread* th = cams_.at(frame.at(0).toUInt()).second;
-                    if(!th)
-                        th = new QThread;
-                    cam->moveToThread(th);
-                    //connect(th, &QThread::finished, cam, &QObject::deleteLater);
-                    cam->stream();
-                    th->start();
+                    if(!cam->turnedOn)
+                    {
+                        //włącz stream
+                        cam->turnedOn = true;
+                        QThread* th = cams_.at(frame.at(0).toUInt()).second;
+                        if(!th)
+                        {
+                            th = new QThread;
+                            std::cout << "przesuwanie do wątku\n";
+                            cam->moveToThread(th);
+                            //connect(th, &QThread::finished, cam, &QObject::deleteLater);
+                            //cam->stream();
+                            connect(th, SIGNAL(started()), cam, SLOT(stream()));
+                            connect(cam, SIGNAL(streamEnded()), th, SLOT(quit()));
+                            connect(th, SIGNAL(finished()), th, SLOT(deleteLater()));
+                            std::cout << "startowanie wątku\n";
+                            th->start();
+                        }
+                    }
+
                 }
                 else
                 {
+                    //QThread* th = cams_.at(frame.at(0).toUInt()).second;
+                    //cam = qobject_cast<CameraWorker*>(th);
+                    std::cout << "CameraHandler::set(). Calling CameraWorker::stop().\n";
                     cam->stop();
                 }
             }
@@ -141,7 +160,7 @@ void CameraHandler::setCamerasCount(unsigned int count)
     }
     else if(count > camerasCount_)
     {
-        for(unsigned int i=0; i<count-camerasCount_; ++i)
+        for(unsigned int i=camerasCount_; i<count; ++i)
         {
             CameraWorker* cw = new CameraWorker(&host_);
             cw->device = i;

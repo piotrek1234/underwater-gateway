@@ -217,10 +217,7 @@ int AxisHandler::getRegister(unsigned int axisNr, regType type)
         else if(type == regType::speed)
             return assignedSpeedRegisters_.at(axisNr);
     }
-    /*else
-    {
-        emit error("Axis index out of range");
-        return -1;
-    }*/
+
+    return -1;
 }
 

@@ -3,8 +3,8 @@
 
 TcpServer::TcpServer(int port)
 {
-    this->port = port;
-    this->client = nullptr;
+    this->port_ = port;
+    this->client_ = nullptr;
     connect(this, SIGNAL(newConnection()), this, SLOT(newClient()));
 }
 
@@ -15,7 +15,7 @@ TcpServer::~TcpServer()
 
 void TcpServer::start()
 {
-    listen(QHostAddress::Any, port);
+    listen(QHostAddress::Any, port_);
 }
 
 void TcpServer::newClient()
@@ -23,7 +23,7 @@ void TcpServer::newClient()
     while(hasPendingConnections())
     {
         QTcpSocket* socket = nextPendingConnection();
-        if(!client) client = socket;
+        if(!client_) client_ = socket;
         connect(socket, SIGNAL(readyRead()), this, SLOT(grabFrame()));
         connect(socket, SIGNAL(disconnected()), this, SLOT(removeClient()));
     }
@@ -32,8 +32,8 @@ void TcpServer::newClient()
 void TcpServer::removeClient()
 {
     QTcpSocket* who = qobject_cast<QTcpSocket*>(sender());
-    if(who == client)
-        client = nullptr;
+    if(who == client_)
+        client_ = nullptr;
 }
 
 void TcpServer::grabFrame()
@@ -70,7 +70,7 @@ void TcpServer::grabFrame()
 
 void TcpServer::sendResponse(QString frame)
 {
-    client->write(frame.toStdString().c_str());
+    client_->write(frame.toStdString().c_str());
     //client->waitForBytesWritten(3000);
 }
 

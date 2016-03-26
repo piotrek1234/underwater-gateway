@@ -10,12 +10,12 @@ class TcpServer : public QTcpServer
 {
     Q_OBJECT
 public:
-    TcpServer(int port = 6001);
+    TcpServer(int port_ = 6001);
     ~TcpServer();
     void start();
 private:
-    int port;
-    QTcpSocket* client;
+    int port_;
+    QTcpSocket* client_;
 private slots:
     void newClient();
     void removeClient();

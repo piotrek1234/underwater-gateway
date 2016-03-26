@@ -19,7 +19,7 @@ public:
 signals:
     void sendFrame(QString);
 private:
-    QMap<QString, Handler*> handlers;
+    QMap<QString, Handler*> handlers_;
 
 public slots:
     void parseFrame(QString frame);
