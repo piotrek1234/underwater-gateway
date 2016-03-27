@@ -97,8 +97,8 @@ void ModbusMaster::process()
     if(!commands_.isEmpty())
     {
         busy_ = true;
-        ModbusCommand* cmd = commands_.back();
-        commands_.pop_back();
+        ModbusCommand* cmd = commands_.front();
+        commands_.pop_front();
 
         cmd->execute(this);
         timer_.start();
