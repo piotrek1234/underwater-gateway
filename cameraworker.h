@@ -25,11 +25,13 @@ public:
     void setHost(QString* host);
 private:
     QString* host_;
+    bool waiting;
+    QTimer* t1;
 public slots:
     void stream();
     void stop();
 private slots:
-    void moveOn() {}
+    void moveOn() { }
 signals:
     void streamEnded();
 };

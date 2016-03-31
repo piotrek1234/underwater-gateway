@@ -101,9 +101,9 @@ void CameraHandler::set(QStringList frame)
                 emit response(QStringList() << QString(handlerType()) << QString::number(cam->device) << \
                               QString::number(cam->res_w) << QString::number(cam->res_h) << \
                               QString::number(cam->fps) << \
-                              /*QString::number(static_cast<unsigned int>(cam->turnedOn)) << \*/
                               QString::number(static_cast<unsigned int>(turnOn)) << \
                               host_ << QString::number(cam->port));
+
 
                 if(turnOn)
                 {
@@ -115,12 +115,12 @@ void CameraHandler::set(QStringList frame)
                         if(!th)
                         {
                             th = new QThread;
-                            std::cout << "przesuwanie do wątku\n";
+                            //std::cout << "przesuwanie do wątku\n";
                             cam->moveToThread(th);
                             connect(th, SIGNAL(started()), cam, SLOT(stream()));
                             connect(cam, SIGNAL(streamEnded()), th, SLOT(quit()));
                             connect(th, SIGNAL(finished()), th, SLOT(deleteLater()));
-                            std::cout << "startowanie wątku\n";
+                            //std::cout << "startowanie wątku\n";
                             th->start();
                         }
                     }

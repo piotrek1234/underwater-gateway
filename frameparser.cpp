@@ -25,6 +25,7 @@ Handler *FrameParser::getHandler(char type)
 
 void FrameParser::parseFrame(QString frame)
 {
+    //std::cout << frame.toStdString() << "\n";
     QStringList args = frame.split(",", QString::KeepEmptyParts);
 
     // echo request

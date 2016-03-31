@@ -1,4 +1,5 @@
 #include "cameraworker.h"
+#include <QTime>
 
 CameraWorker::CameraWorker()
 {
@@ -6,7 +7,7 @@ CameraWorker::CameraWorker()
 
 void CameraWorker::stream()
 {
-    std::cout << "CW::stream()\n";
+    //std::cout << "CW::stream()\n";
     // na podstawie https://github.com/chenxiaoqino/udp-image-streaming/blob/master/Client.cpp
 
     using namespace cv;
@@ -31,7 +32,7 @@ void CameraWorker::stream()
 
         while (turnedOn)
         {
-            std::cout << "w pętli\n";
+            //std::cout << "w pętli\n";
             cap >> frame;
             resize(frame, send, Size(res_w, res_h), 0, 0, INTER_LINEAR);
             vector < int > compression_params;
@@ -50,8 +51,9 @@ void CameraWorker::stream()
                 sock.sendTo( & encoded[i * PACK_SIZE], PACK_SIZE, servAddress, servPort);
 
             //waitKey(1000/fps);
-            QTimer timer;
-            timer.singleShot(1000/fps, this, SLOT(moveOn()));
+            //QTimer::singleShot(1000/fps, this, SLOT(moveOn()));
+            QTime dieTime = QTime::currentTime().addMSecs(1000/fps);
+            while(QTime::currentTime() < dieTime);
         }
         emit streamEnded();
     }
@@ -65,7 +67,7 @@ void CameraWorker::stream()
 void CameraWorker::stop()
 {
     turnedOn = false;
-    std::cout << "CameraWorker::stop(). setting turnedOn to false.\n";
+    //std::cout << "CameraWorker::stop(). setting turnedOn to false.\n";
 }
 
 void CameraWorker::setHost(QString *host)
