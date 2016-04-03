@@ -23,6 +23,9 @@ void CameraWorker::stream()
         Mat frame, send;
         vector < uchar > encoded;
         VideoCapture cap(device);
+        cap.set(CV_CAP_PROP_FRAME_WIDTH, res_w);
+        cap.set(CV_CAP_PROP_FRAME_HEIGHT, res_h);
+        cap.set(CV_CAP_PROP_FPS, fps);
 
         if (!cap.isOpened())
         {
