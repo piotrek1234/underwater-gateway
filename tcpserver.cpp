@@ -70,7 +70,10 @@ void TcpServer::grabFrame()
 
 void TcpServer::sendResponse(QString frame)
 {
-    client_->write(frame.toStdString().c_str());
+    if((client_ != nullptr) && (client_->state() == QAbstractSocket::ConnectedState))
+        client_->write(frame.toStdString().c_str());
+    else
+        std::cerr << "Couldn't send response (client not connected)\n";
     //client->waitForBytesWritten(3000);
 }
 

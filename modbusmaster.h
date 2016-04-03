@@ -18,7 +18,7 @@ class ModbusMaster : public QThread
 {
     Q_OBJECT
 public:
-    ModbusMaster(QString device, int slave, int baud=57600, unsigned long delay=100);   //todo: sprawdzić optymalny delay
+    ModbusMaster(QString device, int slave, int baud=57600, unsigned long delay=50);   //todo: sprawdzić optymalny delay
     ~ModbusMaster();
     void write(int reg, int value);
     void writeMulti(int first, int n, QVector<int> values);
@@ -37,6 +37,8 @@ private:
 private slots:
     void process();
     void reactivate();
+signals:
+    void error(QString);
 };
 
 #endif // MODBUSMASTER_H

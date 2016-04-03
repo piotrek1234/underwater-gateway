@@ -11,8 +11,11 @@
 #include "modbus_regs.h"
 
 //todo:
-// sprawdzić czy konwersja int-u_int16_t-int16_t nie sypie się na odroidzie
-// dopracować kamery: zrobić delay pomiędzy ramkami dla kamer, problem analogiczny jak przy modbusie
+// - dopracować kamery: zrobić delay pomiędzy ramkami dla kamer, problem analogiczny jak przy modbusie
+// - dodać underwater-gateway do autostartu + ewentualnie niech chodzi jako usługa
+// - program zawiesza się po wykonaniu zapytania do modbusa bez aktywnego połączenia z nim
+// - sprawdzić czy wytrzyma zalew ramek (np. 8-9 na sekundę)
+// - sprawdzić optymalny delay modbusa (przy 50ms jest dobrze, być może można zejść niżej)
 
 int main(int argc, char *argv[])
 {
@@ -72,7 +75,11 @@ int main(int argc, char *argv[])
     fp3.addHandler(oh);
 
     ModbusMaster* modbus1 = new ModbusMaster("/dev/ttyUSB0", 100);
-    //ModbusMaster* modbus2 = new ModbusMaster("/dev/ttySAC1", 101);
+    //ModbusMaster* modbus2 = new ModbusMaster("/dev/ttySAC0", 100);
+
+    //QObject::connect(modbus1, SIGNAL(error(QString)), &fp3, SLOT(buildErrorFrame(QString)));
+    //QObject::connect(modbus2, SIGNAL(error(QString)), &fp3, SLOT(buildErrorFrame(QString)));
+
     ah->setModbus(modbus1);
     mh->setModbus(modbus1);
     th->setModbus(modbus1);

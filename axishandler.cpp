@@ -8,25 +8,6 @@ AxisHandler::AxisHandler(unsigned int axesCount)
 
 void AxisHandler::set(QStringList frame)
 {
-    /*if(frame.at(0) == QString("*"))
-    {
-        if(frame.length() == axesCount_+1)
-        {
-            QVector<int> values;
-            for(int i=1; i<=axesCount_; ++i)
-                values.push_back(frame.at(i).toInt());
-            modbus_->writeMulti(getRegister(frame.at(0).toUInt(), regType::write), axesCount_, values);
-        }
-        else
-            emit error("mało argsów");
-    }
-    else if(frame.length() == 2)
-    {
-        modbus_->write(getRegister(frame.at(0).toUInt(), regType::write), frame.at(1).toInt());
-        emit response(QStringList() << QString(handlerType()) << frame);
-    }
-    else
-        emit error("Wrong parameters count for Axis:set. Required 2, given "+QString::number(frame.length()));*/
     ModbusCommand* cmd;
     QStringList context = QStringList() << QString(handlerType());
     bool ok = false;
@@ -68,7 +49,8 @@ void AxisHandler::set(QStringList frame)
             }
             else
             {
-                emit error("Not enough arguments to set all axes' speed at once");
+                emit error("Arguments count not valid. Required 3 or " + QString::number(axesCount_+2) + \
+                           ", given " + QString::number(frame.length()));
                 return;
             }
         }
@@ -80,7 +62,8 @@ void AxisHandler::set(QStringList frame)
         }
         else
         {
-
+            emit error("Not enough arguments to set all axes' speed at once");
+            return;
         }
     }
     else if(frame.length() == 2)    // (S,A,nr,wartość)
@@ -92,6 +75,7 @@ void AxisHandler::set(QStringList frame)
     else
         emit error("Arguments count not valid. Required 2 or " + QString::number(axesCount_+1) + \
                    " (+1 for speed), given " + QString::number(frame.length()));
+
     if(ok)
     {
         connect(cmd, SIGNAL(done(QStringList,QStringList)), this, SLOT(finish(QStringList,QStringList)));
@@ -102,28 +86,6 @@ void AxisHandler::set(QStringList frame)
 
 void AxisHandler::get(QStringList frame)
 {
-    /*if(frame.length() == 0)
-    {
-        //wysłać wszystkie osie
-    }
-    else if(frame.length() == 1)
-    {
-        if(frame.at(0).toInt() < axesCount_ && frame.at(0).toInt() >= 0)
-        {
-            //pobranie z modbusa
-            int value = modbus_->read(getRegister(frame.at(0).toUInt(), regType::read));
-            //int value = 10;
-            //jeśli się udało, to wysyłamy dane:
-            emit response(QStringList() << QString(handlerType()) << frame.at(0) << QString::number(value));
-        }
-        else
-        {
-            emit error("Axis index out of range ("+frame.at(0)+" vs 0.."+QString::number(axesCount_));
-            return;
-        }
-    }
-    else
-        emit error("Wrong parameters count for Axis:get. Required 1, given "+QString::number(frame.length()));*/
     QStringList context = QStringList() << QString(handlerType()) << frame.at(0);
     ModbusCommand* cmd;
     bool ok = false;

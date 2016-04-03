@@ -25,13 +25,17 @@ Handler *FrameParser::getHandler(char type)
 
 void FrameParser::parseFrame(QString frame)
 {
-    //std::cout << frame.toStdString() << "\n";
     QStringList args = frame.split(",", QString::KeepEmptyParts);
 
     // echo request
     if(args.at(0) == QString(Frame::FRAME_TYPE_ECHO))
     {
-        buildFrame(QStringList() << "alive");
+        QStringList qsl_handlers = QStringList();
+        for(Handler* h : handlers_)
+            qsl_handlers << QString(h->handlerType());
+
+        buildFrame(QStringList() << ("alive with " + qsl_handlers.join(", ")));
+
         return;
     }
 

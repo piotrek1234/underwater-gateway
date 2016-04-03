@@ -10,6 +10,7 @@ ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long de
         return;
     }
 
+
     modbus_set_slave(modbus_, slave);
 
     if (modbus_connect(modbus_) == -1)
@@ -36,6 +37,7 @@ void ModbusMaster::write(int reg, int value)
         //QThread::msleep(delay_);
         return;
     }
+
     std::cerr << "Writing modbus register failed.\n";
 }
 
@@ -51,6 +53,7 @@ void ModbusMaster::writeMulti(int first, int n, QVector<int> values)
         delete [] vals;
         return;
     }
+
     std::cerr << "Writing modbus registers failed.\n";
     delete [] vals;
 }
@@ -63,6 +66,7 @@ int ModbusMaster::read(int reg)
         //QThread::msleep(delay_);
         return static_cast<int16_t>(val);
     }
+
     std::cerr << "Reading modbus register failed.\n";
     return 0;
 }
@@ -70,6 +74,7 @@ int ModbusMaster::read(int reg)
 QVector<int> ModbusMaster::readMulti(int first, int n)
 {
     u_int16_t* val = new u_int16_t[n];
+
     if(modbus_read_registers(modbus_, first, n, val) == n)
     {
         QVector<int> values;
@@ -79,7 +84,9 @@ QVector<int> ModbusMaster::readMulti(int first, int n)
         //QThread::msleep(delay_);
         return values;
     }
+
     std::cerr << "Reading modbus registers failed.\n";
+
     delete [] val;
     return QVector<int>();
 }
