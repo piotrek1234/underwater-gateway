@@ -23,6 +23,6 @@ $ sudo usermod -a -G dialout użytkownik
 
 Komunikacja
 ---
-Standardowo komunikacja z GCS odbywa się przez TCP na porcie 6001.
-[Format ramek](../../wiki/Format-ramek)
-[Sposób działania](../../wiki/Sposób-działania)
+Standardowo komunikacja z GCS odbywa się przez TCP na porcie 6001, 6002 (kamery) i 6003 (modbus).
+* [Format ramek](../../wiki/Format-ramek)
+* [Sposób działania](../../wiki/Sposób-działania)
