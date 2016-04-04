@@ -12,6 +12,8 @@ void ModbusCommandMultiwrite::execute(ModbusMaster *modbus)
     for(int i : values_)
         vals << QString::number(i);
 
-    modbus->writeMulti(address_, num_, values_);
-    emit done(context_, vals);
+    if(modbus->writeMulti(address_, num_, values_))
+        emit done(context_, vals);
+    else
+        emit error("(ModbusCmdMultiwrite) Writing multiple registers failed. Context: " + context_.join(","));
 }

@@ -8,10 +8,18 @@ ModbusCommandMultiread::ModbusCommandMultiread(QStringList context, int address,
 
 void ModbusCommandMultiread::execute(ModbusMaster *modbus)
 {
-    QVector<int> vals_i = modbus->readMulti(address_, num_);
-    QStringList vals;
-    for(int i : vals_i)
-        vals << QString::number(i);
+    QPair<bool, QVector<int> > vals_i = modbus->readMulti(address_, num_);
 
-    emit done(context_, vals);
+    if(vals_i.first)
+    {
+        QStringList vals;
+        for(int i : vals_i.second)
+            vals << QString::number(i);
+
+        emit done(context_, vals);
+    }
+    else
+    {
+        emit error("(ModbusCmdMultiread) Reading registers failed. Context: " + context_.join(","));
+    }
 }

@@ -7,6 +7,8 @@ ModbusCommandWrite::ModbusCommandWrite(QStringList context, int address, int val
 
 void ModbusCommandWrite::execute(ModbusMaster *modbus)
 {
-    modbus->write(address_, value_);
-    emit done(context_, QStringList(QString::number(value_)));
+    if(modbus->write(address_, value_))
+        emit done(context_, QStringList(QString::number(value_)));
+    else
+        emit error("(ModbusCmdWrite) Writing register failed. Context: " + context_.join(","));
 }

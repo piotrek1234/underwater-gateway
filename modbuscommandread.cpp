@@ -9,6 +9,9 @@ ModbusCommandRead::ModbusCommandRead(QStringList context, int address) : ModbusC
 
 void ModbusCommandRead::execute(ModbusMaster *modbus)
 {
-    int val = modbus->read(address_);
-    emit done(context_, QStringList(QString::number(val)));
+    QPair<bool, int> val = modbus->read(address_);
+    if(val.first)
+        emit done(context_, QStringList(QString::number(val.second)));
+    else
+        emit error("(ModbusCmdRead) Reading register failed. Context: " + context_.join(","));
 }
