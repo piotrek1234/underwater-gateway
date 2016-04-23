@@ -5,6 +5,7 @@
 
 class PressureHandler : public ModbusInterface
 {
+    Q_OBJECT
 public:
     PressureHandler();
     virtual ~PressureHandler();
@@ -13,6 +14,7 @@ public:
     virtual char handlerType() const { return 'P'; }
     void assignRegister(int regAddr);
     int getRegister();
+    virtual QString description();
 private:
     int assignedRegister_;
     static const int PRESS_DIV = 100;

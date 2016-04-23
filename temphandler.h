@@ -5,6 +5,7 @@
 
 class TempHandler : public ModbusInterface
 {
+    Q_OBJECT
 public:
     TempHandler();
     virtual ~TempHandler();
@@ -13,6 +14,7 @@ public:
     virtual char handlerType() const { return 'T'; }
     void assignRegister(int regAddr);
     int getRegister();
+    virtual QString description();
 private:
     int assignedRegister_;
     static const int TEMP_DIV = 100;

@@ -6,6 +6,7 @@
 
 class ModbusCommandWrite : public ModbusCommand
 {
+    Q_OBJECT
 public:
     ModbusCommandWrite(QStringList context, int address, int value);
     virtual ~ModbusCommandWrite() {}

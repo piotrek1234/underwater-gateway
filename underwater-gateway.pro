@@ -43,7 +43,9 @@ SOURCES += main.cpp \
     modbuscommandwrite.cpp \
     modbuscommandmultiread.cpp \
     modbuscommandmultiwrite.cpp \
-    servicehandler.cpp
+    servicehandler.cpp \
+    logger.cpp \
+    modbuscommandping.cpp
 
 HEADERS += \
     tcpserver.h \
@@ -66,4 +68,6 @@ HEADERS += \
     modbuscommandwrite.h \
     modbuscommandmultiread.h \
     modbuscommandmultiwrite.h \
-    servicehandler.h
+    servicehandler.h \
+    logger.h \
+    modbuscommandping.h

@@ -6,6 +6,7 @@
 
 class ModbusCommandRead : public ModbusCommand
 {
+    Q_OBJECT
 public:
     ModbusCommandRead(QStringList context, int address);
     virtual ~ModbusCommandRead() {}

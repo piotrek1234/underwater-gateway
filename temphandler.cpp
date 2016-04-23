@@ -39,6 +39,11 @@ int TempHandler::getRegister()
     return assignedRegister_;
 }
 
+QString TempHandler::description()
+{
+    return QString(handlerType())+"/"+QString::number(getRegister());
+}
+
 void TempHandler::finish(QStringList context, QStringList args)
 {
     emit response(context << QString::number(args.at(0).toDouble()/TEMP_DIV));

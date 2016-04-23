@@ -12,6 +12,7 @@ enum class regType{
 
 class AxisHandler : public ModbusInterface
 {
+    Q_OBJECT
 public:
     AxisHandler() : axesCount_(0) {}
     AxisHandler(unsigned int axesCount);
@@ -23,6 +24,7 @@ public:
     void assignRegister(unsigned int axisNr, regType type, int regAddr);
     int getRegister(unsigned int axisNr, regType type);
     virtual char handlerType() const { return 'A'; }
+    virtual QString description();
 private:
     QVector<int> assignedReadRegisters_;
     QVector<int> assignedWriteRegisters_;

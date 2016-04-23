@@ -13,12 +13,14 @@ public:
     virtual void set(QStringList frame) = 0;
     virtual void get(QStringList frame) = 0;
     virtual char handlerType() const = 0;
+    virtual QString description() { return QString(); }
 protected slots:
     virtual void finish(QStringList context, QStringList args);
     void failure(QString content);
 signals:
     void response(QStringList);
     void error(QString);
+    void info(QString);
 };
 
 #endif // HANDLER_H

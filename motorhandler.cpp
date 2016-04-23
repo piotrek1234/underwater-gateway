@@ -13,26 +13,6 @@ MotorHandler::~MotorHandler()
 
 void MotorHandler::set(QStringList frame)
 {
-    /*if(frame.at(0) == QString("*"))
-    {
-        if(frame.length() == motorsCount_+1)
-        {
-            QVector<int> values;
-            for(int i=1; i<=motorsCount_; ++i)
-                values.push_back(frame.at(i).toInt());
-            modbus_->writeMulti(getRegister(frame.at(0).toUInt()), motorsCount_, values);
-
-            //delete [] values;
-        }
-        else
-            emit error("mało argsów");
-    }
-    else if(frame.length() == 2)
-    {
-        modbus_->write(getRegister(frame.at(0).toUInt()), frame.at(1).toInt());
-    }
-    else
-        emit error("Arguments count not valid. Required 2 or 6, given "+QString::number(frame.length()));*/
     ModbusCommand* cmd;
     QStringList context = QStringList() << QString(handlerType()) << frame.at(0);
     bool ok = false;
@@ -43,9 +23,16 @@ void MotorHandler::set(QStringList frame)
         {
             ok = true;
             QVector<int> values;
+            bool conv_ok;
 
             for(int i=1; i<=motorsCount_; ++i)
-                values.push_back(frame.at(i).toInt());
+            {
+                values.push_back(static_cast<int>(frame.at(i).toFloat(&conv_ok)));
+                if(!conv_ok)
+                {
+                    emit error("(MotorHandler::set) Invalid int conversion");
+                }
+            }
 
             cmd = new ModbusCommandMultiwrite(context, getRegister(0), motorsCount_, values);
         }
@@ -135,5 +122,19 @@ int MotorHandler::getRegister(unsigned int motor)
 
     emit error("Motor index out of range");
     return -1;
+}
+
+QString MotorHandler::description()
+{
+    QString addresses("");
+
+    for(int i=0; i<assignedRegisters_.size(); ++i)
+    {
+        addresses += QString::number(getRegister(i));
+        if(i < assignedRegisters_.size()-1)
+            addresses += ",";
+    }
+
+    return QString(handlerType())+"/"+QString::number(motorsCount_)+"/"+addresses;
 }
 

@@ -12,6 +12,9 @@ void CameraWorker::stream()
 
     using namespace cv;
 
+    emit info("C/8/Starting stream/"+QString::number(device)+"/"+QString::number(res_w)+"/"+QString::number(res_h)+"/" \
+              +QString::number(fps)+"/"+QString::number(port));
+
     string servAddress = host_->toStdString();
     unsigned short servPort = Socket::resolveService(QString::number(port).toStdString(), "udp");
 
@@ -23,13 +26,14 @@ void CameraWorker::stream()
         Mat frame, send;
         vector < uchar > encoded;
         VideoCapture cap(device);
-        cap.set(CV_CAP_PROP_FRAME_WIDTH, res_w);
+        /*cap.set(CV_CAP_PROP_FRAME_WIDTH, res_w);
         cap.set(CV_CAP_PROP_FRAME_HEIGHT, res_h);
-        cap.set(CV_CAP_PROP_FPS, fps);
+        cap.set(CV_CAP_PROP_FPS, fps);*/
 
         if (!cap.isOpened())
         {
             cerr << "OpenCV Failed to open camera\n";
+            emit info("C/5/Could not open camera");
             turnedOn = false;
         }
 
@@ -59,6 +63,7 @@ void CameraWorker::stream()
             while(QTime::currentTime() < dieTime);
         }
         emit streamEnded();
+        emit info("C/6/Stream ended/"+QString::number(device));
     }
     catch (SocketException & e)
     {
@@ -70,12 +75,14 @@ void CameraWorker::stream()
 void CameraWorker::stop()
 {
     turnedOn = false;
+    emit info("C/9/Stopping stream/"+QString::number(device));
     //std::cout << "CameraWorker::stop(). setting turnedOn to false.\n";
 }
 
 void CameraWorker::setHost(QString *host)
 {
     host_ = host;
+    emit info("C/7/Host set/"+(*host));
 }
 
 

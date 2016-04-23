@@ -13,6 +13,7 @@ public:
     TcpServer(int port_ = 6001);
     ~TcpServer();
     void start();
+    QString description();
 private:
     int port_;
     QTcpSocket* client_;
@@ -24,6 +25,7 @@ private slots:
     void grabFrame();
 signals:
     void frameContent(QString);
+    void info(QString);
 };
 
 #endif // TCPSERVER_H

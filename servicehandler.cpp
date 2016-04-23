@@ -30,14 +30,14 @@ void ServiceHandler::set(QStringList frame)
                 val = MB_CTRL_CMD_RESET_STEPPERS; //todo: to ma być flaga a nie wartość
             else
             {
-                emit error("(ServiceHandler) Command not known:" + frame.at(1));
+                emit error("S/1/Command not known:" + frame.at(1));
                 return;
             }
             cmd = new ModbusCommandWrite(context, MB_CTRL_CMD, val);
         }
         else
         {
-            emit error("(ServiceHandler) Service type not known for set: " + frame.at(0));
+            emit error("S/2/Service type not known for set: " + frame.at(0));
             return;
         }
 
@@ -47,7 +47,7 @@ void ServiceHandler::set(QStringList frame)
     }
     else
     {
-        emit error("(ServiceHandler) Arguments count not valid for set. Required 2, given "+QString::number(frame.length()));
+        emit error("S/3/Arguments count not valid for set. Required 2, given "+QString::number(frame.length()));
         return;
     }
 }
@@ -75,13 +75,13 @@ void ServiceHandler::get(QStringList frame)
         }
         else
         {
-            emit error("(ServiceHandler) Service type not known for get: " + frame.at(0));
+            emit error("S/2/Service type not known for get: " + frame.at(0));
             return;
         }
     }
     else
     {
-        emit error("(ServiceHandler) Arguments count not valid for get. Required 1, given "+QString::number(frame.length()));
+        emit error("S/3/Arguments count not valid for get. Required 1, given "+QString::number(frame.length()));
         return;
     }
 

@@ -7,6 +7,7 @@
 
 class MotorHandler : public ModbusInterface
 {
+    Q_OBJECT
 public:
     MotorHandler() : motorsCount_(0) {}
     MotorHandler(unsigned int motorsCount);
@@ -18,6 +19,7 @@ public:
     void assignRegister(unsigned int motorNr, int regAddr);
     int getRegister(unsigned int motor);
     virtual char handlerType() const { return 'M'; }
+    virtual QString description();
 private:
     QVector<int> assignedRegisters_;
     unsigned int motorsCount_;

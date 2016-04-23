@@ -23,6 +23,20 @@ int OutputHandler::getRegister(unsigned int outputNr)
     return -1;
 }
 
+QString OutputHandler::description()
+{
+    QString addresses("");
+
+    for(int i=0; i<assignedRegisters_.size(); ++i)
+    {
+        addresses += QString::number(getRegister(i));
+        if(i < assignedRegisters_.size()-1)
+            addresses += ",";
+    }
+
+    return QString(handlerType())+"/"+QString::number(outputsCount_)+"/"+addresses;
+}
+
 void OutputHandler::set(QStringList frame)
 {
     ModbusCommand* cmd;

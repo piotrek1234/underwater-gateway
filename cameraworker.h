@@ -34,6 +34,7 @@ private slots:
     void moveOn() { }
 signals:
     void streamEnded();
+    void info(QString message);
 };
 
 #endif // CAMERAWORKER_H

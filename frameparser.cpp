@@ -26,6 +26,7 @@ Handler *FrameParser::getHandler(char type)
 void FrameParser::parseFrame(QString frame)
 {
     QStringList args = frame.split(",", QString::KeepEmptyParts);
+    std::cout << "> " << frame.toStdString() << "\n";
 
     // echo request
     if(args.at(0) == QString(Frame::FRAME_TYPE_ECHO))
@@ -78,6 +79,8 @@ void FrameParser::buildFrame(QStringList args)
     frame += Frame::FRAME_SEPARATOR;
     frame += args.join(",");
     frame += Frame::FRAME_END;
+
+    std::cout << "< " << frame.toStdString() << "\n";
 
     emit sendFrame(frame);
 }

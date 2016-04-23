@@ -6,6 +6,7 @@
 
 class ServiceHandler : public ModbusInterface
 {
+    Q_OBJECT
 public:
     ServiceHandler();
     virtual ~ServiceHandler() {}

@@ -38,6 +38,11 @@ int PressureHandler::getRegister()
     return assignedRegister_;
 }
 
+QString PressureHandler::description()
+{
+    return QString(handlerType())+"/"+QString::number(getRegister());
+}
+
 void PressureHandler::finish(QStringList context, QStringList args)
 {
     emit response(context << QString::number(args.at(0).toDouble()/PRESS_DIV));

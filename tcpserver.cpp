@@ -18,6 +18,11 @@ void TcpServer::start()
     listen(QHostAddress::Any, port_);
 }
 
+QString TcpServer::description()
+{
+    return "TCP/"+QString::number(port_);
+}
+
 void TcpServer::newClient()
 {
     while(hasPendingConnections())
@@ -26,6 +31,7 @@ void TcpServer::newClient()
         if(!client_) client_ = socket;
         connect(socket, SIGNAL(readyRead()), this, SLOT(grabFrame()));
         connect(socket, SIGNAL(disconnected()), this, SLOT(removeClient()));
+        emit info("TCP/"+QString::number(port_)+"/connected/"+client_->peerAddress().toString());
     }
 }
 
@@ -33,7 +39,10 @@ void TcpServer::removeClient()
 {
     QTcpSocket* who = qobject_cast<QTcpSocket*>(sender());
     if(who == client_)
+    {
         client_ = nullptr;
+        emit info("TCP/"+QString::number(port_)+"/disconnected");
+    }
 }
 
 void TcpServer::grabFrame()
@@ -72,8 +81,7 @@ void TcpServer::sendResponse(QString frame)
 {
     if((client_ != nullptr) && (client_->state() == QAbstractSocket::ConnectedState))
         client_->write(frame.toStdString().c_str());
-    else
-        std::cerr << "Couldn't send response (client not connected)\n";
-    //client->waitForBytesWritten(3000);
+    /*else
+        std::cerr << "Couldn't send response (client not connected)\n";*/
 }
 

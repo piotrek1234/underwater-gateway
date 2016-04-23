@@ -27,7 +27,8 @@ void AxisHandler::set(QStringList frame)
         }
         else
         {
-            emit error("Not enough arguments to set all axes at once");
+            emit error("A/1/Arguments count not valid. Required " + QString::number(axesCount_+1) + \
+                       ", given " + QString::number(frame.length()));
             return;
         }
     }
@@ -49,7 +50,7 @@ void AxisHandler::set(QStringList frame)
             }
             else
             {
-                emit error("Arguments count not valid. Required 3 or " + QString::number(axesCount_+2) + \
+                emit error("A/1/Arguments count not valid. Required 3 or " + QString::number(axesCount_+2) + \
                            ", given " + QString::number(frame.length()));
                 return;
             }
@@ -62,7 +63,7 @@ void AxisHandler::set(QStringList frame)
         }
         else
         {
-            emit error("Not enough arguments to set all axes' speed at once");
+            emit error("A/1/Not enough arguments to set all axes' speed at once");
             return;
         }
     }
@@ -73,7 +74,7 @@ void AxisHandler::set(QStringList frame)
         cmd = new ModbusCommandWrite(context, getRegister(frame.at(0).toInt(), regType::write), frame.at(1).toInt());
     }
     else
-        emit error("Arguments count not valid. Required 2 or " + QString::number(axesCount_+1) + \
+        emit error("A/1/Arguments count not valid. Required 2 or " + QString::number(axesCount_+1) + \
                    " (+1 for speed), given " + QString::number(frame.length()));
 
     if(ok)
@@ -111,17 +112,19 @@ void AxisHandler::get(QStringList frame)
             if(frame.at(1) == QString("*"))
             {
                 cmd = new ModbusCommandMultiread(context, getRegister(0, regType::speed), axesCount_);
+                ok = true;
             }
             else
             {
                 cmd = new ModbusCommandRead(context, getRegister(frame.at(1).toInt(), regType::speed));
+                ok = true;
             }
         }
         else
-            emit error("Two arguments given, but first is not 's'");
+            emit error("A/2/Two arguments given, but first is not 's'");
     }
     else
-        emit error("Arguments count not valid. Required 1 or 2, given "+QString::number(frame.length()));
+        emit error("A/1/Arguments count not valid. Required 1 or 2, given "+QString::number(frame.length()));
 
     if(ok)
     {
@@ -179,5 +182,33 @@ int AxisHandler::getRegister(unsigned int axisNr, regType type)
     }
 
     return -1;
+}
+
+QString AxisHandler::description()
+{
+    QString addressesW(""), addressesR(""), addressesS("");
+
+    for(int i=0; i<assignedWriteRegisters_.size(); ++i)
+    {
+        addressesW += QString::number(getRegister(i, regType::write));
+        if(i < assignedWriteRegisters_.size()-1)
+            addressesW += ",";
+    }
+
+    for(int i=0; i<assignedReadRegisters_.size(); ++i)
+    {
+        addressesR += QString::number(getRegister(i, regType::read));
+        if(i < assignedReadRegisters_.size()-1)
+            addressesR += ",";
+    }
+
+    for(int i=0; i<assignedSpeedRegisters_.size(); ++i)
+    {
+        addressesS += QString::number(getRegister(i, regType::read));
+        if(i < assignedSpeedRegisters_.size()-1)
+            addressesS += ",";
+    }
+
+    return QString(handlerType())+"/"+QString::number(axesCount_)+"/"+addressesW+"/"+addressesR+"/"+addressesS;
 }
 

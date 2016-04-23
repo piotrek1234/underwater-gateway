@@ -38,13 +38,13 @@ void CameraHandler::get(QStringList frame)
             }
             else
             {
-                emit error("Camera index out of range");
+                emit error("C/1/Camera index out of range");
                 return;
             }
         }
-        emit error("Wrong parameters format. Valid options: H, number.");
+        emit error("C/2/Wrong parameters format. Valid options: H, number.");
     }
-    emit error("Wrong parameters count. Required 1, given "+QString::number(frame.length()));
+    emit error("C/3/Wrong parameters count. Required 1, given "+QString::number(frame.length()));
 }
 
 void CameraHandler::set(QStringList frame)
@@ -60,12 +60,12 @@ void CameraHandler::set(QStringList frame)
                 if(setHostAddress(frame.at(1)))
                     emit response(QStringList() << QString(handlerType()) << "H" << host_);
                 else
-                    emit error("Wrong IP address for host");
+                    emit error("C/4/Wrong IP address for host");
                 return;
             }
             else
             {
-                emit error("Wrong parameters count for camera:set_host. Required 2, given "+QString::number(frame.length()));
+                emit error("C/3/Wrong parameters count for camera:set_host. Required 2, given "+QString::number(frame.length()));
                 return;
             }
         }
@@ -94,7 +94,7 @@ void CameraHandler::set(QStringList frame)
                 }
                 else
                 {
-                    emit error("Wrong parameters count. Required 2 or 6, given "+QString::number(frame.length()));
+                    emit error("C/3/Wrong parameters count. Required 2 or 6, given "+QString::number(frame.length()));
                     return;
                 }
 
@@ -102,7 +102,7 @@ void CameraHandler::set(QStringList frame)
                               QString::number(cam->res_w) << QString::number(cam->res_h) << \
                               QString::number(cam->fps) << \
                               QString::number(static_cast<unsigned int>(turnOn)) << \
-                              host_ << QString::number(cam->port));
+                              QString::number(cam->port));
 
 
                 if(turnOn)
@@ -132,13 +132,13 @@ void CameraHandler::set(QStringList frame)
             }
             else
             {
-                emit error("Camera index out of range");
+                emit error("C/1/Camera index out of range");
                 return;
             }
         }
     }
     else
-        emit error("Wrong parameters count. Required 2 or 8, given "+QString::number(frame.length()));
+        emit error("C/3/Wrong parameters count. Required 2 or 8, given "+QString::number(frame.length()));
 
 }
 
@@ -153,6 +153,7 @@ void CameraHandler::setCamerasCount(unsigned int count)
         for(unsigned int i=camerasCount_; i<count; ++i)
         {
             CameraWorker* cw = new CameraWorker(&host_);
+            connect(cw, SIGNAL(info(QString)), this, SLOT(passInfo(QString)));
             cw->device = i;
             cams_.append(QPair<CameraWorker*, QThread*>(cw, nullptr));
         }
@@ -169,6 +170,29 @@ bool CameraHandler::setHostAddress(QString address)
     if(ok)
         host_ = address;
     return ok;
+}
+
+QString CameraHandler::description()
+{
+    QString info(host_+"/"+QString::number(camerasCount_)+"/");
+
+    for(int i=0; i<camerasCount_; ++i)
+    {
+        CameraWorker* cam = cams_.at(i).first;
+        info += QString::number(cam->device) + ","+QString::number(cam->res_w)+","+QString::number(cam->res_h)\
+                +","+QString::number(cam->fps)+","+QString::number(cam->port)+","+\
+                QString::number(static_cast<int>(cam->turnedOn));
+        if(i < camerasCount_-1)
+            info += "/";
+
+    }
+
+    return QString(handlerType())+"/"+info;
+}
+
+void CameraHandler::passInfo(QString message)
+{
+    emit info(message);
 }
 
 

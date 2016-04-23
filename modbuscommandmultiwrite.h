@@ -6,6 +6,7 @@
 
 class ModbusCommandMultiwrite : public ModbusCommand
 {
+    Q_OBJECT
 public:
     ModbusCommandMultiwrite(QStringList context, int address, int num, QVector<int> values);
     virtual ~ModbusCommandMultiwrite() {}

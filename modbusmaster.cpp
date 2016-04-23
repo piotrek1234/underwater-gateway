@@ -5,7 +5,7 @@ ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long de
 {
     // istnienie konsoli uart (/dev/tty*)
     QFileInfo dev(device);
-    if(!(dev.exists() && dev.isFile()))
+    if(!dev.exists())
     {
         std::cerr << "(Modbus init) No such device: " << device.toStdString() << "\n";
         return;
@@ -33,7 +33,10 @@ ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long de
 
     connected_ = true;
     timer_.setInterval(delay);
+    //pingTimer_.setInterval(delay*10);
+    //connect(&pingTimer_, SIGNAL(timeout()), this, SLOT(enqueuePing()));
     connect(&timer_, SIGNAL(timeout()), this, SLOT(reactivate()));
+    pingTimer_.start();
 }
 
 ModbusMaster::~ModbusMaster()
@@ -120,6 +123,11 @@ void ModbusMaster::addCommand(ModbusCommand *cmd)
         process();
 }
 
+void ModbusMaster::restart()
+{
+
+}
+
 void ModbusMaster::process()
 {
     if(!commands_.isEmpty())
@@ -137,8 +145,6 @@ void ModbusMaster::process()
     {
         timer_.stop();
     }
-
-
 }
 
 void ModbusMaster::reactivate()
@@ -151,4 +157,19 @@ void ModbusMaster::reactivate()
     }
     else
         busy_ = false;
+}
+
+void ModbusMaster::enqueuePing()
+{
+    ModbusCommand* cmd = new ModbusCommandPing();
+    addCommand(cmd);
+}
+
+void ModbusMaster::ping()
+{
+    u_int16_t uptime;
+    if(connected_ && modbus_read_registers(modbus_, MB_STAT_RUNTIME, 1, &uptime) == 1)
+        return;
+    else
+        std::cerr << "(Modbus::ping) Reading modbus register failed.\n";
 }

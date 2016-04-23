@@ -6,6 +6,7 @@
 
 class ModbusInterface : public Handler
 {
+    Q_OBJECT
 public:
     ModbusInterface();
     void setModbus(ModbusMaster* modbus);

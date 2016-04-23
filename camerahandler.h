@@ -11,6 +11,7 @@
 
 class CameraHandler : public Handler
 {
+    Q_OBJECT
 public:
     CameraHandler() : camerasCount_(0), host_("127.0.0.1") {}
     CameraHandler(unsigned int camerasCount);
@@ -21,10 +22,13 @@ public:
     unsigned int getCamerasCount() { return camerasCount_; }
     bool setHostAddress(QString address);
     virtual char handlerType() const { return 'C'; }
+    virtual QString description();
 private:
     QVector<QPair<CameraWorker*, QThread*> > cams_;
     unsigned int camerasCount_;
     QString host_;
+private slots:
+    void passInfo(QString message);
 };
 
 #endif // CAMERAHANDLER_H
