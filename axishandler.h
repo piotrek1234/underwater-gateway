@@ -7,7 +7,8 @@
 enum class regType{
     read,
     write,
-    speed
+    speed,
+    gear
 };
 
 class AxisHandler : public ModbusInterface
@@ -29,6 +30,7 @@ private:
     QVector<int> assignedReadRegisters_;
     QVector<int> assignedWriteRegisters_;
     QVector<int> assignedSpeedRegisters_;
+    QVector<int> assignedGearRegisters_;
     unsigned int axesCount_;
 };
 

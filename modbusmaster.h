@@ -22,7 +22,7 @@ class ModbusMaster : public QThread
 {
     Q_OBJECT
 public:
-    ModbusMaster(QString device, int slave, int baud=57600, unsigned long delay=100);   //todo: sprawdzić optymalny delay
+    ModbusMaster(QString device, int slave, int baud=38400, unsigned long delay=100);   //todo: sprawdzić optymalny delay
     ~ModbusMaster();
     bool write(int reg, int value);
     bool writeMulti(int first, int n, QVector<int> values);

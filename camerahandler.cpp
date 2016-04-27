@@ -20,7 +20,7 @@ void CameraHandler::get(QStringList frame)
     {
         if(frame.at(0) == "H")
         {
-            emit response(QStringList() << host_);
+            emit response(QStringList() << QString(handlerType()) << "H" << host_);
             return;
         }
         else if(true /* czy jest cyfra */)

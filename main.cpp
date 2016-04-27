@@ -29,10 +29,10 @@ int main(int argc, char *argv[])
     FrameParser fp1, fp2, fp3, fp4, fp5;
     Logger* lh = new Logger();
 
-    QObject::connect(&s_cam1, SIGNAL(info(QString)), lh, SLOT(log(QString)));
-    QObject::connect(&s_cam2, SIGNAL(info(QString)), lh, SLOT(log(QString)));
-    QObject::connect(&s_mod1, SIGNAL(info(QString)), lh, SLOT(log(QString)));
-    QObject::connect(&s_mod2, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(&s_cam1, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(&s_cam2, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(&s_mod1, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(&s_mod2, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
     QObject::connect(&s_cam1, SIGNAL(frameContent(QString)), &fp1, SLOT(parseFrame(QString)));
     QObject::connect(&fp1, SIGNAL(sendFrame(QString)), &s_cam1, SLOT(sendResponse(QString)));
@@ -42,13 +42,13 @@ int main(int argc, char *argv[])
     QObject::connect(&fp3, SIGNAL(sendFrame(QString)), &s_mod1, SLOT(sendResponse(QString)));
     QObject::connect(&s_mod2, SIGNAL(frameContent(QString)), &fp4, SLOT(parseFrame(QString)));
     QObject::connect(&fp4, SIGNAL(sendFrame(QString)), &s_mod2, SLOT(sendResponse(QString)));
-    QObject::connect(&s_log, SIGNAL(frameContent(QString)), &fp5, SLOT(parseFrame(QString)));
-    QObject::connect(&fp5, SIGNAL(sendFrame(QString)), &s_log, SLOT(sendResponse(QString)));
+    //QObject::connect(&s_log, SIGNAL(frameContent(QString)), &fp5, SLOT(parseFrame(QString)));
+    //QObject::connect(&fp5, SIGNAL(sendFrame(QString)), &s_log, SLOT(sendResponse(QString)));
 
-    QObject::connect(&fp1, SIGNAL(sendFrame(QString)), lh, SLOT(log(QString)));
-    QObject::connect(&fp2, SIGNAL(sendFrame(QString)), lh, SLOT(log(QString)));
-    QObject::connect(&fp3, SIGNAL(sendFrame(QString)), lh, SLOT(log(QString)));
-    QObject::connect(&fp4, SIGNAL(sendFrame(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(&fp1, SIGNAL(sendFrame(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(&fp2, SIGNAL(sendFrame(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(&fp3, SIGNAL(sendFrame(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(&fp4, SIGNAL(sendFrame(QString)), lh, SLOT(log(QString)));
 
     MotorHandler* mh = new MotorHandler(6);
     mh->assignRegister(0, MB_CTRL_BLDC_1);
@@ -57,40 +57,48 @@ int main(int argc, char *argv[])
     mh->assignRegister(3, MB_CTRL_BLDC_4);
     mh->assignRegister(4, MB_CTRL_BLDC_5);
     mh->assignRegister(5, MB_CTRL_BLDC_6);
-    QObject::connect(mh, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(mh, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
-    AxisHandler* ah = new AxisHandler(3);
+    AxisHandler* ah = new AxisHandler(4);
     ah->assignRegister(0, regType::read, MB_STAT_STEPPER_1_POS);
     ah->assignRegister(1, regType::read, MB_STAT_STEPPER_2_POS);
     ah->assignRegister(2, regType::read, MB_STAT_STEPPER_3_POS);
+    ah->assignRegister(3, regType::read, MB_STAT_STEPPER_4_POS);
     ah->assignRegister(0, regType::write, MB_CTRL_STEPPER_1_POS);
     ah->assignRegister(1, regType::write, MB_CTRL_STEPPER_2_POS);
     ah->assignRegister(2, regType::write, MB_CTRL_STEPPER_3_POS);
+    ah->assignRegister(3, regType::write, MB_CTRL_STEPPER_4_POS);
     ah->assignRegister(0, regType::speed, MB_CTRL_STEPPER_1_SPEED);
     ah->assignRegister(1, regType::speed, MB_CTRL_STEPPER_2_SPEED);
     ah->assignRegister(2, regType::speed, MB_CTRL_STEPPER_3_SPEED);
-    QObject::connect(ah, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    ah->assignRegister(3, regType::speed, MB_CTRL_STEPPER_4_SPEED);
+    ah->assignRegister(0, regType::gear, MB_CTRL_STEPPER_1_GEAR);
+    ah->assignRegister(1, regType::gear, MB_CTRL_STEPPER_2_GEAR);
+    ah->assignRegister(2, regType::gear, MB_CTRL_STEPPER_3_GEAR);
+    ah->assignRegister(3, regType::gear, MB_CTRL_STEPPER_4_GEAR);
+    //QObject::connect(ah, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
     CameraHandler* ch1 = new CameraHandler(2);
     CameraHandler* ch2 = new CameraHandler(2);
-    QObject::connect(ch1, SIGNAL(info(QString)), lh, SLOT(log(QString)));
-    QObject::connect(ch2, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(ch1, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+   // QObject::connect(ch2, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
     TempHandler *th = new TempHandler();
     th->assignRegister(9);
-    QObject::connect(th, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(th, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
     PressureHandler* ph = new PressureHandler();
     ph->assignRegister(8);
     QObject::connect(ph, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
-    OutputHandler* oh = new OutputHandler(2);
+    OutputHandler* oh = new OutputHandler(3);
     oh->assignRegister(0, MB_CTRL_POWER_1);
     oh->assignRegister(1, MB_CTRL_POWER_2);
-    QObject::connect(oh, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    oh->assignRegister(1, MB_CTRL_POWER_3);
+    //QObject::connect(oh, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
     ServiceHandler* sh = new ServiceHandler();
-    QObject::connect(sh, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(sh, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
     fp3.addHandler(ah);
     fp4.addHandler(th);
@@ -100,9 +108,9 @@ int main(int argc, char *argv[])
     fp3.addHandler(mh);
     fp3.addHandler(oh);
     fp3.addHandler(sh);
-    fp5.addHandler(lh);
+    //fp5.addHandler(lh);
 
-    lh->addHandler(ah);
+    /*lh->addHandler(ah);
     lh->addHandler(th);
     lh->addHandler(ph);
     lh->addHandler(ch1);
@@ -114,7 +122,7 @@ int main(int argc, char *argv[])
     lh->addServer(&s_cam1);
     lh->addServer(&s_cam2);
     lh->addServer(&s_mod1);
-    lh->addServer(&s_mod2);
+    lh->addServer(&s_mod2);*/
 
     //ModbusMaster* modbus1 = new ModbusMaster("/dev/ttyUSB0", 100, 38400);
     ModbusMaster* modbus1 = new ModbusMaster("/dev/ttyUSB0", 100);
@@ -134,7 +142,7 @@ int main(int argc, char *argv[])
     s_cam2.start();
     s_mod1.start();
     s_mod2.start();
-    s_log.start();
+    //s_log.start();
 
     return a.exec();
 }

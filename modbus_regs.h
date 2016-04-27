@@ -5,7 +5,7 @@
 
 /* Control section					*/
 #define MB_SECTION_CTRL_ADDR	0	/* Control section start address											*/
-#define MB_SECTION_CTRL_SIZE	19	/* Control section number of registers										*/
+#define MB_SECTION_CTRL_SIZE	23	/* Control section number of registers										*/
 
 #define MB_CTRL_BLDC_1			0	/* BLDC 1 power to set (0 on reset); Unit: %								*/
 #define MB_CTRL_BLDC_2			1	/* BLDC 2 power to set (0 on reset); Unit: %								*/
@@ -24,36 +24,37 @@
 #define MB_CTRL_STEPPER_3_SPEED	12	/* Stepper Motor 1 speed to set (36 on reset); Unit: deg					*/
 #define MB_CTRL_STEPPER_4_SPEED	13	/* Stepper Motor 1 speed to set (36 on reset); Unit: deg					*/
 
-#define MB_CTRL_POWER_1			14	/* Power Output 1 control register (0 on reset); Unit: on/off				*/
-#define MB_CTRL_POWER_2			15	/* Power Output 2 control register (0 on reset); Unit: on/off				*/
-#define MB_CTRL_POWER_3			16	/* Power Output 3 control register (0 on reset); Unit: on/off				*/
+#define MB_CTRL_STEPPER_1_GEAR	14
+#define MB_CTRL_STEPPER_2_GEAR	15
+#define MB_CTRL_STEPPER_3_GEAR	16
+#define MB_CTRL_STEPPER_4_GEAR	17
 
-#define MB_CTRL_MODE			17	/* Driver Mode Register (0 on reset); Unit: Specified flags (below)			*/
-#define MB_CTRL_CMD				18	/* Driver Command Register (0 on reset); Unit: Specified flags (below)		*/
+#define MB_CTRL_POWER_1			18	/* Power Output 1 control register (0 on reset); Unit: on/off				*/
+#define MB_CTRL_POWER_2			19	/* Power Output 2 control register (0 on reset); Unit: on/off				*/
+#define MB_CTRL_POWER_3			20	/* Power Output 3 control register (0 on reset); Unit: on/off				*/
+
+#define MB_CTRL_MODE			21	/* Driver Mode Register (0 on reset); Unit: Specified flags (below)			*/
+#define MB_CTRL_CMD				22	/* Driver Command Register (0 on reset); Unit: Specified flags (below)		*/
 
 /* Status section (READ ONLY!)		*/
-#define MB_SECTION_STAT_ADDR	20	/* Status section start address												*/
+#define MB_SECTION_STAT_ADDR	25	/* Status section start address												*/
 #define MB_SECTION_STAT_SIZE	6	/* Status section number of registers										*/
 
-#define MB_STAT_STEPPER_1_POS	20	/* Stepper Motor 1 current position (0 on reset); Unit: deg					*/
-#define MB_STAT_STEPPER_2_POS	21	/* Stepper Motor 2 current position (0 on reset); Unit: deg					*/
-#define MB_STAT_STEPPER_3_POS	22	/* Stepper Motor 3 current position (0 on reset); Unit: deg					*/
-#define MB_STAT_STEPPER_4_POS	23	/* Stepper Motor 4 current position (0 on reset); Unit: deg					*/
+#define MB_STAT_STEPPER_1_POS	25	/* Stepper Motor 1 current position (0 on reset); Unit: deg					*/
+#define MB_STAT_STEPPER_2_POS	26	/* Stepper Motor 2 current position (0 on reset); Unit: deg					*/
+#define MB_STAT_STEPPER_3_POS	27	/* Stepper Motor 3 current position (0 on reset); Unit: deg					*/
+#define MB_STAT_STEPPER_4_POS	28	/* Stepper Motor 4 current position (0 on reset); Unit: deg					*/
 
-#define MB_STAT_DRIVER			24	/* Driver Status Register (0 on reset); Range: Specified bit flags (below)	*/
-#define MB_STAT_RUNTIME			25	/* Time from last power on (in seconds)										*/
+#define MB_STAT_DRIVER			29	/* Driver Status Register (0 on reset); Range: Specified bit flags (below)	*/
+#define MB_STAT_RUNTIME			30	/* Time from last power on (in seconds)										*/
 
 /* Debug							*/
-#define MB_DEBUG_1				30
-#define MB_DEBUG_2				31
-#define MB_DEBUG_3				32
-#define MB_DEBUG_4				33
-#define MB_DEBUG_5				34
-#define MB_DEBUG_6				35
-#define MB_DEBUG_7				36
-#define MB_DEBUG_8				37
-#define MB_DEBUG_9				38
-#define MB_DEBUG_10				39
+
+#define MB_DEBUG_1				35
+#define MB_DEBUG_2				36
+#define MB_DEBUG_3				37
+#define MB_DEBUG_4				38
+#define MB_DEBUG_5				39
 
 /**************************************************END OF MODBUS REGISTERS***************************************/
 
@@ -68,6 +69,7 @@
 /* MB_STAT_DRIVER	*/
 #define MB_STAT_DRIVER_STOPPED		0x0000	/* Driver normal operating mode										*/
 #define MB_STAT_DRIVER_NORMAL		0x0001	/* Driver was stopped due to user action or connection timeout		*/
+#define MB_STAT_DRIVER_BLDC_INIT	0x0002	/* Driver bldc initialization										*/
 
 /**********************************************END OF REGISTERS SPECIFIED FLAGS**********************************/
 
@@ -80,6 +82,9 @@
 
 #define MB_CTRL_STEPPER_SPEED_MIN	36
 #define MB_CTRL_STEPPER_SPEED_MAX	1080
+
+#define MB_CTRL_STEPPER_GEAR_MIN	1
+#define MB_CTRL_STEPPER_GEAR_MAX	1000
 
 #define MB_CTRL_POWER_MIN			0
 #define MB_CTRL_POWER_MAX			1

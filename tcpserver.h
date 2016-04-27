@@ -4,7 +4,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QList>
-#include <frame.h>
+#include "frame.h"
 
 class TcpServer : public QTcpServer
 {

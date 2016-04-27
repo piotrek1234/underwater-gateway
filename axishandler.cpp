@@ -46,7 +46,7 @@ void AxisHandler::set(QStringList frame)
                 for(int i=2; i<axesCount_+2; ++i)
                     values.push_back(frame.at(i).toInt());
                 //rejestr prędkości
-                cmd = new ModbusCommandMultiwrite(context, getRegister(0, regType::write), axesCount_, values);
+                cmd = new ModbusCommandMultiwrite(context, getRegister(0, regType::speed), axesCount_, values);
             }
             else
             {
@@ -59,11 +59,46 @@ void AxisHandler::set(QStringList frame)
         {
             ok = true;
             //rejestr prędkości
-            cmd = new ModbusCommandWrite(context, getRegister(frame.at(1).toInt(), regType::write), frame.at(2).toInt());
+            cmd = new ModbusCommandWrite(context, getRegister(frame.at(1).toInt(), regType::speed), frame.at(2).toInt());
         }
         else
         {
             emit error("A/1/Not enough arguments to set all axes' speed at once");
+            return;
+        }
+    }
+    else if(frame.at(0) == QString("g"))    // (S,A,g,...)
+    {
+        context << QString("g");
+        if(frame.at(1) == QString("*")) // (S,A,g,*,...)
+        {
+            if(frame.length() == axesCount_+2)  // (S,A,g,*,piersza,druga,...)
+            {
+                context << QString("*");
+                ok = true;
+                QVector<int> values;
+
+                for(int i=2; i<axesCount_+2; ++i)
+                    values.push_back(frame.at(i).toInt());
+                //rejestr prędkości
+                cmd = new ModbusCommandMultiwrite(context, getRegister(0, regType::gear), axesCount_, values);
+            }
+            else
+            {
+                emit error("A/1/Arguments count not valid. Required 3 or " + QString::number(axesCount_+2) + \
+                           ", given " + QString::number(frame.length()));
+                return;
+            }
+        }
+        else if(frame.length() == 3)    // (S,A,g,nr,wartość)
+        {
+            ok = true;
+            //rejestr prędkości
+            cmd = new ModbusCommandWrite(context, getRegister(frame.at(1).toInt(), regType::gear), frame.at(2).toInt());
+        }
+        else
+        {
+            emit error("A/1/Not enough arguments to set all axes' gear at once");
             return;
         }
     }
@@ -120,8 +155,21 @@ void AxisHandler::get(QStringList frame)
                 ok = true;
             }
         }
+        else if(frame.at(0) == QString("g"))
+        {
+            if(frame.at(1) == QString("*"))
+            {
+                cmd = new ModbusCommandMultiread(context, getRegister(0, regType::gear), axesCount_);
+                ok = true;
+            }
+            else
+            {
+                cmd = new ModbusCommandRead(context, getRegister(frame.at(1).toInt(), regType::gear));
+                ok = true;
+            }
+        }
         else
-            emit error("A/2/Two arguments given, but first is not 's'");
+            emit error("A/2/Two arguments given, but first is not 's' nor 'g'");
     }
     else
         emit error("A/1/Arguments count not valid. Required 1 or 2, given "+QString::number(frame.length()));
@@ -164,6 +212,8 @@ void AxisHandler::assignRegister(unsigned int axisNr, regType type, int regAddr)
             assignedWriteRegisters_[axisNr] = regAddr;
         else if(type == regType::speed)
             assignedSpeedRegisters_[axisNr] = regAddr;
+        else if(type == regType::gear)
+            assignedGearRegisters_[axisNr] = regAddr;
     }
     /*else
         emit error("Axis index out of range");*/
@@ -179,6 +229,8 @@ int AxisHandler::getRegister(unsigned int axisNr, regType type)
             return assignedWriteRegisters_.at(axisNr);
         else if(type == regType::speed)
             return assignedSpeedRegisters_.at(axisNr);
+        else if(type == regType::gear)
+            return assignedGearRegisters_.at(axisNr);
     }
 
     return -1;
