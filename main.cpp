@@ -10,7 +10,7 @@
 #include "servicehandler.h"
 #include "modbusmaster.h"
 #include "modbus_regs.h"
-#include "logger.h"
+//#include "logger.h"
 
 //todo:
 // - dopracować kamery: zrobić delay pomiędzy ramkami dla kamer, problem analogiczny jak przy modbusie (niepotwierdzone)
@@ -25,9 +25,9 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    TcpServer s_cam1(6001), s_cam2(6002), s_mod1(6003), s_mod2(6004), s_log(6005);
-    FrameParser fp1, fp2, fp3, fp4, fp5;
-    Logger* lh = new Logger();
+    TcpServer s_cam1(6001), s_cam2(6002), s_mod1(6003), s_mod2(6004)/*, s_log(6005)*/;
+    FrameParser fp1, fp2, fp3, fp4/*, fp5*/;
+    //Logger* lh = new Logger();
 
     //QObject::connect(&s_cam1, SIGNAL(info(QString)), lh, SLOT(log(QString)));
     //QObject::connect(&s_cam2, SIGNAL(info(QString)), lh, SLOT(log(QString)));
@@ -89,12 +89,12 @@ int main(int argc, char *argv[])
 
     PressureHandler* ph = new PressureHandler();
     ph->assignRegister(8);
-    QObject::connect(ph, SIGNAL(info(QString)), lh, SLOT(log(QString)));
+    //QObject::connect(ph, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
     OutputHandler* oh = new OutputHandler(3);
     oh->assignRegister(0, MB_CTRL_POWER_1);
     oh->assignRegister(1, MB_CTRL_POWER_2);
-    oh->assignRegister(1, MB_CTRL_POWER_3);
+    oh->assignRegister(2, MB_CTRL_POWER_3);
     //QObject::connect(oh, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
     ServiceHandler* sh = new ServiceHandler();

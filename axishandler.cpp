@@ -189,6 +189,7 @@ void AxisHandler::setAxesCount(unsigned int count)
         assignedReadRegisters_.erase(assignedReadRegisters_.begin()+count, assignedReadRegisters_.end());
         assignedWriteRegisters_.erase(assignedWriteRegisters_.begin()+count, assignedWriteRegisters_.end());
         assignedSpeedRegisters_.erase(assignedSpeedRegisters_.begin()+count, assignedSpeedRegisters_.end());
+        assignedGearRegisters_.erase(assignedGearRegisters_.begin()+count, assignedGearRegisters_.end());
     }
     else if(count > axesCount_)
     {
@@ -197,6 +198,7 @@ void AxisHandler::setAxesCount(unsigned int count)
             assignedReadRegisters_.append(0);
             assignedWriteRegisters_.append(0);
             assignedSpeedRegisters_.append(0);
+            assignedGearRegisters_.append(0);
         }
     }
     axesCount_ = count;
@@ -238,7 +240,7 @@ int AxisHandler::getRegister(unsigned int axisNr, regType type)
 
 QString AxisHandler::description()
 {
-    QString addressesW(""), addressesR(""), addressesS("");
+    QString addressesW(""), addressesR(""), addressesS(""), addressesG("");
 
     for(int i=0; i<assignedWriteRegisters_.size(); ++i)
     {
@@ -256,11 +258,18 @@ QString AxisHandler::description()
 
     for(int i=0; i<assignedSpeedRegisters_.size(); ++i)
     {
-        addressesS += QString::number(getRegister(i, regType::read));
+        addressesS += QString::number(getRegister(i, regType::speed));
         if(i < assignedSpeedRegisters_.size()-1)
             addressesS += ",";
     }
 
-    return QString(handlerType())+"/"+QString::number(axesCount_)+"/"+addressesW+"/"+addressesR+"/"+addressesS;
+    for(int i=0; i<assignedGearRegisters_.size(); ++i)
+    {
+        addressesG += QString::number(getRegister(i, regType::gear));
+        if(i < assignedGearRegisters_.size()-1)
+            addressesG += ",";
+    }
+
+    return QString(handlerType())+"/"+QString::number(axesCount_)+"/"+addressesW+"/"+addressesR+"/"+addressesS+"/"+addressesG;
 }
 

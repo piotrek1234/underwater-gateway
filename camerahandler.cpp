@@ -23,6 +23,11 @@ void CameraHandler::get(QStringList frame)
             emit response(QStringList() << QString(handlerType()) << "H" << host_);
             return;
         }
+        else if(frame.at(0) == "Q")
+        {
+            emit response(QStringList() << QString(handlerType()) << "Q" << QString::number(cams_.at(0).first->jpg_quality));
+            return;
+        }
         else if(true /* czy jest cyfra */)
         {
             int i = frame.at(0).toInt();
@@ -61,6 +66,31 @@ void CameraHandler::set(QStringList frame)
                     emit response(QStringList() << QString(handlerType()) << "H" << host_);
                 else
                     emit error("C/4/Wrong IP address for host");
+                return;
+            }
+            else
+            {
+                emit error("C/3/Wrong parameters count for camera:set_host. Required 2, given "+QString::number(frame.length()));
+                return;
+            }
+        }
+        else if(frame.at(0) == "Q")/*todo todo*/
+        {
+            if(frame.length() == 2)
+            {
+                bool ok;
+                int quality = frame.at(1).toInt(&ok);
+                if(quality>100 || quality<1)
+                    ok = false;
+
+                if(ok)
+                {
+                    for(int i=0; i<camerasCount_; ++i)
+                        cams_.at(i).first->jpg_quality = quality;
+                    emit response(QStringList() << QString(handlerType()) << "Q" << QString::number(quality));
+                }
+                else
+                    emit error("C/10/Invalid quality for camera");
                 return;
             }
             else

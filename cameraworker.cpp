@@ -27,6 +27,7 @@ void CameraWorker::stream()
         cap.set(CV_CAP_PROP_FRAME_WIDTH, res_w);
         cap.set(CV_CAP_PROP_FRAME_HEIGHT, res_h);
         cap.set(CV_CAP_PROP_FPS, fps);
+        cap.set(CV_CAP_PROP_FOURCC, CV_FOURCC('Y', 'U', 'Y', 'V'));
 
         if (!cap.isOpened())
         {
@@ -35,27 +36,37 @@ void CameraWorker::stream()
             turnedOn = false;
         }
 
+        QTime dieTime = QTime::currentTime();
+
         while (turnedOn)
         {
             //std::cout << ".\n";
-            QTime dieTime = QTime::currentTime().addMSecs(1000/fps);
+
             while(QTime::currentTime() < dieTime);
+            dieTime = QTime::currentTime().addMSecs(1000/fps);
 
             //cap >> frame;
+            QTime time;
+            time.start();
             if(!cap.read(frame))
             {
                 std::cout << "Problem reading frame from camera " << device << std::endl;
                 continue;
             }
+            std::cout << "Grab: " << time.elapsed();
             if(frame.size().area() <= 0)
                 continue;
 
-            resize(frame, send, Size(res_w, res_h), 0, 0, INTER_LINEAR);
+            //resize(frame, send, Size(res_w, res_h), 0, 0, INTER_LINEAR);
             vector < int > compression_params;
             compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
-            compression_params.push_back(ENCODE_QUALITY);
+            compression_params.push_back(jpg_quality);
 
-            imencode(".jpg", send, encoded, compression_params);
+            //imencode(".jpg", send, encoded, compression_params);
+            time.restart();
+            time.start();
+            imencode(".jpg", frame, encoded, compression_params);
+            std::cout << " Encode: " << time.elapsed() << std::endl;
             //imshow("send", send);
             int total_pack = 1 + (encoded.size() - 1) / PACK_SIZE;
 
