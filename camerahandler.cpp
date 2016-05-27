@@ -23,7 +23,7 @@ void CameraHandler::get(QStringList frame)
             emit response(QStringList() << QString(handlerType()) << "H" << host_);
             return;
         }
-        else if(frame.at(0) == "Q")
+        else if(frame.at(0) == "Q") //przerobić na niezależne sterowanie jakością dla każdej kamery
         {
             emit response(QStringList() << QString(handlerType()) << "Q" << QString::number(cams_.at(0).first->jpg_quality));
             return;
@@ -95,7 +95,22 @@ void CameraHandler::set(QStringList frame)
             }
             else
             {
-                emit error("C/3/Wrong parameters count for camera:set_host. Required 2, given "+QString::number(frame.length()));
+                emit error("C/3/Wrong parameters count for camera:quality. Required 2, given "+QString::number(frame.length()));
+                return;
+            }
+        }
+        else if(frame.at(0) == "S")
+        {
+            if(frame.length() == 2)
+            {
+                int num = frame.at(1).toInt();
+                cams_.at(num).first->saveFrame = true;
+                    emit response(QStringList() << QString(handlerType()) << "S" << QString::number(num));
+                return;
+            }
+            else
+            {
+                emit error("C/3/Wrong parameters count for camera:saveFrame. Required 2, given "+QString::number(frame.length()));
                 return;
             }
         }

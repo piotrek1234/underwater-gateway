@@ -14,7 +14,7 @@ class CameraWorker : public QObject
 public:
     explicit CameraWorker();
     CameraWorker(QString* host) : device(0), res_w(640), res_h(480), fps(30), turnedOn(false), \
-        port(6002), jpg_quality(50), host_(host) {}
+        port(6002), jpg_quality(50), saveFrame(false), host_(host) {}
     unsigned int device;
     unsigned int res_w;
     unsigned int res_h;
@@ -22,6 +22,7 @@ public:
     bool turnedOn;
     unsigned int port;
     int jpg_quality;
+    bool saveFrame;
     void setHost(QString* host);
 private:
     QString* host_;

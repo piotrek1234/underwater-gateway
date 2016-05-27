@@ -10,6 +10,8 @@
 #include "servicehandler.h"
 #include "modbusmaster.h"
 #include "modbus_regs.h"
+#include "measurehandler.h"
+#include "fileinterface.h"
 //#include "logger.h"
 
 //todo:
@@ -100,6 +102,9 @@ int main(int argc, char *argv[])
     ServiceHandler* sh = new ServiceHandler();
     //QObject::connect(sh, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
+    MeasureHandler* Mh = new MeasureHandler(1000);
+    Mh->addMeasure('T', new Measure(new FileInterface("/sys/class/thermal/thermal_zone1/temp"), 0.001, 0.0));
+
     fp3.addHandler(ah);
     fp4.addHandler(th);
     fp4.addHandler(ph);
@@ -108,6 +113,7 @@ int main(int argc, char *argv[])
     fp3.addHandler(mh);
     fp3.addHandler(oh);
     fp3.addHandler(sh);
+    fp3.addHandler(Mh);
     //fp5.addHandler(lh);
 
     /*lh->addHandler(ah);

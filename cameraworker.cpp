@@ -1,5 +1,6 @@
 #include "cameraworker.h"
 #include <QTime>
+#include <QDateTime>
 
 CameraWorker::CameraWorker()
 {
@@ -21,7 +22,7 @@ void CameraWorker::stream()
     {
         UDPSocket sock;
 
-        Mat frame, send;
+        Mat frame;
         vector < uchar > encoded;
         VideoCapture cap(device);
         cap.set(CV_CAP_PROP_FRAME_WIDTH, res_w);
@@ -40,34 +41,32 @@ void CameraWorker::stream()
 
         while (turnedOn)
         {
-            //std::cout << ".\n";
-
             while(QTime::currentTime() < dieTime);
             dieTime = QTime::currentTime().addMSecs(1000/fps);
 
-            //cap >> frame;
-            QTime time;
-            time.start();
             if(!cap.read(frame))
             {
                 std::cout << "Problem reading frame from camera " << device << std::endl;
                 continue;
             }
-            std::cout << "Grab: " << time.elapsed();
             if(frame.size().area() <= 0)
                 continue;
 
-            //resize(frame, send, Size(res_w, res_h), 0, 0, INTER_LINEAR);
             vector < int > compression_params;
             compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
             compression_params.push_back(jpg_quality);
 
-            //imencode(".jpg", send, encoded, compression_params);
-            time.restart();
-            time.start();
             imencode(".jpg", frame, encoded, compression_params);
-            std::cout << " Encode: " << time.elapsed() << std::endl;
-            //imshow("send", send);
+            if(saveFrame)
+            {
+                saveFrame = false;
+                vector < int > compression_params;
+                compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
+                compression_params.push_back(90);
+                string nazwa = "capture/"+QDateTime::currentDateTime().toString("yyyy.MM.dd_hh.mm.ss").toStdString()+".jpg";
+                imwrite(nazwa, frame, compression_params);
+            }
+
             int total_pack = 1 + (encoded.size() - 1) / PACK_SIZE;
 
             int ibuf[1];

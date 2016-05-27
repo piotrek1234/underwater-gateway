@@ -45,7 +45,12 @@ SOURCES += main.cpp \
     modbuscommandmultiwrite.cpp \
     servicehandler.cpp \
     logger.cpp \
-    modbuscommandping.cpp
+    modbuscommandping.cpp \
+    measure.cpp \
+    measureinterface.cpp \
+    fileinterface.cpp \
+    i2cinterface.cpp \
+    measurehandler.cpp
 
 HEADERS += \
     tcpserver.h \
@@ -70,4 +75,9 @@ HEADERS += \
     modbuscommandmultiwrite.h \
     servicehandler.h \
     logger.h \
-    modbuscommandping.h
+    modbuscommandping.h \
+    measure.h \
+    measureinterface.h \
+    fileinterface.h \
+    i2cinterface.h \
+    measurehandler.h
