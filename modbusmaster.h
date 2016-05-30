@@ -17,12 +17,13 @@
 #include "modbuscommandping.h"
 #include "modbus_regs.h"
 #include <modbus/modbus.h>
+#include <QDateTime>
 
 class ModbusMaster : public QThread
 {
     Q_OBJECT
 public:
-    ModbusMaster(QString device, int slave, int baud=38400, unsigned long delay=100);   //todo: sprawdzić optymalny delay
+    ModbusMaster(QString device, int slave, int baud=38400, unsigned long delay=50, unsigned int ttl=10);   //todo: sprawdzić optymalny delay
     ~ModbusMaster();
     bool write(int reg, int value);
     bool writeMulti(int first, int n, QVector<int> values);
@@ -42,6 +43,7 @@ private:
     QTimer timer_, pingTimer_;
     bool busy_;
     bool connected_;
+    unsigned int ttl_;
 private slots:
     void process();
     void reactivate();

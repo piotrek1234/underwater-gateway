@@ -1,7 +1,7 @@
 #include "modbusmaster.h"
 
-ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long delay) : \
-    device_(device), slave_(slave), baud_(baud), delay_(delay), busy_(false), connected_(false)
+ModbusMaster::ModbusMaster(QString device, int slave, int baud, unsigned long delay, unsigned int ttl) : \
+    device_(device), slave_(slave), baud_(baud), delay_(delay), busy_(false), connected_(false), ttl_(ttl)
 {
     // istnienie konsoli uart (/dev/tty*)
     QFileInfo dev(device);
@@ -136,10 +136,22 @@ void ModbusMaster::process()
         ModbusCommand* cmd = commands_.front();
         commands_.pop_front();
 
-        cmd->execute(this);
-        timer_.start();
+        while(cmd && (cmd->getCreateTime().msecsTo(QDateTime::currentDateTime()) > delay_*ttl_))
+        {
+            cmd->deleteLater();
+            if(!commands_.isEmpty())
+                cmd = commands_.front();
+            else
+                cmd = nullptr;
+        }
 
-        cmd->deleteLater();
+        if(cmd)
+        {
+            cmd->execute(this);
+            timer_.start();
+
+            cmd->deleteLater();
+        }
     }
     else
     {
