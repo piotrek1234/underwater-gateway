@@ -2,8 +2,6 @@
 #include "tcpserver.h"
 #include "frameparser.h"
 #include "axishandler.h"
-#include "temphandler.h"
-#include "pressurehandler.h"
 #include "motorhandler.h"
 #include "outputhandler.h"
 #include "camerahandler.h"
@@ -13,17 +11,14 @@
 #include "measurehandler.h"
 #include "fileinterface.h"
 #include "imuinterface.h"
+#include "onewireinterface.h"
+#include "i2c.h"
 
 //#include "logger.h"
 
 //todo:
-// - dopracować kamery: zrobić delay pomiędzy ramkami dla kamer, problem analogiczny jak przy modbusie (niepotwierdzone)
 // - sprawdzić poprawność wątków przy kamerach (włączenie, wyłączenie, włączenie -> warningi)
-// - dodać underwater-gateway do autostartu + ewentualnie niech chodzi jako usługa
 // - program zawiesza się po wykonaniu zapytania do modbusa bez aktywnego połączenia z nim
-// - sprawdzić czy wytrzyma zalew ramek (np. 8-9-20 na sekundę)
-// - sprawdzić optymalny delay modbusa (przy 50ms jest dobrze, być może można zejść niżej)
-// - ustawić urządzenie modbusa jako pierwsze pasujące do /dev/ttyUSB{d} (jeśli ma być USB, jeśli SAC to nie ruszać)
 // - pauzować kolejkę modbusa dopóki nie odzyska się połączenia
 
 int main(int argc, char *argv[])
@@ -87,14 +82,6 @@ int main(int argc, char *argv[])
     //QObject::connect(ch1, SIGNAL(info(QString)), lh, SLOT(log(QString)));
    // QObject::connect(ch2, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
-    TempHandler *th = new TempHandler();
-    th->assignRegister(9);
-    //QObject::connect(th, SIGNAL(info(QString)), lh, SLOT(log(QString)));
-
-    PressureHandler* ph = new PressureHandler();
-    ph->assignRegister(8);
-    //QObject::connect(ph, SIGNAL(info(QString)), lh, SLOT(log(QString)));
-
     OutputHandler* oh = new OutputHandler(3);
     oh->assignRegister(0, MB_CTRL_POWER_1);
     oh->assignRegister(1, MB_CTRL_POWER_2);
@@ -106,23 +93,33 @@ int main(int argc, char *argv[])
 
     MeasureHandler* Mh = new MeasureHandler(1000);
 
-    ImuInterface* imu_roll = new ImuInterface(0x28, 0x1c, 360, 2048);
-    ImuInterface* imu_pitch = new ImuInterface(0x28, 0x1e, 360, 2048);
+    I2C* i2c1 = new I2C(0x28);
+    I2C* i2c2 = new I2C(0x68);  //???
+    i2c1->prepare();
+    i2c2->prepare();
+
+    ImuInterface* imu_roll = new ImuInterface(i2c1, 0x1c, 360, 2048);
+    ImuInterface* imu_pitch = new ImuInterface(i2c1, 0x1e, 360, 2048);
     imu_roll->prepare();
+
+    //AdcInterface* adc_press = new AdcInterface(i2c2, 0);    //rejestr?
+    //adc_press->prepare();
 
     Mh->addMeasure('T', new Measure(new FileInterface("/sys/class/thermal/thermal_zone0/temp"), 0.001, 0.0));
     Mh->addMeasure('A', new Measure(imu_roll, 1.0, 0.0));
     Mh->addMeasure('A', new Measure(imu_pitch, 1.0, 0.0));
+    //Mh->addMeasure('P', new Measure(adc_press, 1.0, 0.0));
+    Mh->addMeasure('T', new Measure(new OneWireInterface("nr seryjny"), 0.001, 0.0));
 
-    fp3.addHandler(ah);
-    fp4.addHandler(th);
-    fp4.addHandler(ph);
     fp1.addHandler(ch1);
     fp2.addHandler(ch2);
+
     fp3.addHandler(mh);
     fp3.addHandler(oh);
+    fp3.addHandler(ah);
     fp3.addHandler(sh);
-    fp3.addHandler(Mh);
+
+    fp4.addHandler(Mh);
     //fp5.addHandler(lh);
 
     /*lh->addHandler(ah);
@@ -148,8 +145,6 @@ int main(int argc, char *argv[])
 
     ah->setModbus(modbus1);
     mh->setModbus(modbus1);
-    th->setModbus(modbus1);
-    ph->setModbus(modbus1);
     oh->setModbus(modbus1);
     sh->setModbus(modbus1);
 

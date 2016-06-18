@@ -2,8 +2,8 @@
 
 int ImuInterface::handle;
 
-ImuInterface::ImuInterface(int addr, int reg, int16_t limit, int16_t correction) :
-    i2c_address(addr), i2c_register(reg), limit(limit), correction(correction)
+ImuInterface::ImuInterface(I2C* i2c, int reg, int16_t limit, int16_t correction) :
+    i2c(i2c), i2c_register(reg), limit(limit), correction(correction)
 {
 
 }
@@ -17,8 +17,7 @@ double ImuInterface::read()
 
 void ImuInterface::prepare()
 {
-    handle = wiringPiI2CSetup(i2c_address);
-    wiringPiI2CWriteReg8(handle, 0x3d, 0b00001100);
+    wiringPiI2CWriteReg8(handle, 0x3d, 0b00001100); //tryb NDOF
 }
 
 int16_t ImuInterface::repair(int16_t what, int16_t limit, int16_t correction)
