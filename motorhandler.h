@@ -9,7 +9,7 @@ class MotorHandler : public ModbusInterface
 {
     Q_OBJECT
 public:
-    MotorHandler() : motorsCount_(0) {}
+    MotorHandler() : motorsCount_(0), neutral(0) {}
     MotorHandler(unsigned int motorsCount);
     virtual ~MotorHandler();
     virtual void set(QStringList frame);
@@ -21,8 +21,10 @@ public:
     virtual char handlerType() const { return 'M'; }
     virtual QString description();
 private:
+    int rescale(int value);
     QVector<int> assignedRegisters_;
     unsigned int motorsCount_;
+    int neutral;
 };
 
 #endif // MOTORHANDLER_H

@@ -52,6 +52,71 @@ void MeasureHandler::set(QStringList frame)
             return;
         }
     }
+    else if(frame.length() == 4)
+    {
+        if(frame.at(0) == "o")
+        {
+            char type = frame.at(1).at(0).toLatin1();
+            int number = frame.at(2).toInt();
+            double value = frame.at(3).toDouble();
+
+            auto m = measures.find(type);
+            if(m != measures.end())
+            {
+                if(number < m.value().size())
+                {
+                    m.value().at(number)->setOffset(value);
+                    emit response(QStringList() << QString(handlerType()) << "o" << QString(type) << \
+                                  QString::number(number) << QString::number(value));
+                    return;
+                }
+                else
+                {
+                    emit error("Measure::set (offset) Index out of range");
+                    return;
+                }
+            }
+            else
+            {
+                emit error("Measure::set (offset) Type not known");
+                return;
+            }
+        }
+        else if(frame.at(0) == "m")
+        {
+
+            char type = frame.at(1).at(0).toLatin1();
+            int number = frame.at(2).toInt();
+            double value = frame.at(3).toDouble();
+
+            auto m = measures.find(type);
+            if(m != measures.end())
+            {
+                if(number < m.value().size())
+                {
+                    m.value().at(number)->setMultiplier(value);
+                    emit response(QStringList() << QString(handlerType()) << "m" << QString(type) << \
+                                  QString::number(number) << QString::number(value));
+                    return;
+                }
+                else
+                {
+                    emit error("Measure::set (multiplier) Index out of range");
+                    return;
+                }
+            }
+            else
+            {
+                emit error("Measure::set (multiplier) Type not known");
+                return;
+            }
+        }
+        else
+        {
+            emit error("Measure::set Args: 4, but not offset or multiplier");
+            return;
+        }
+    }
     else
     {
         emit error("Measure::set - zla liczba argumentow");
@@ -60,7 +125,8 @@ void MeasureHandler::set(QStringList frame)
 
 QString MeasureHandler::description()
 {
-
+    //todo
+    return "Measure";
 }
 
 void MeasureHandler::addMeasure(char type, Measure *measure)

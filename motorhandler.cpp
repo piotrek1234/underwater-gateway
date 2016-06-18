@@ -17,7 +17,14 @@ void MotorHandler::set(QStringList frame)
     QStringList context = QStringList() << QString(handlerType()) << frame.at(0);
     bool ok = false;
 
-    if(frame.at(0) == QString("*"))
+    if(frame.at(0) == QString("z"))
+    {
+        if(frame.length() == 2)
+        {
+            neutral = frame.at(1).toInt();
+        }
+    }
+    else if(frame.at(0) == QString("*"))
     {
         if(frame.length() == motorsCount_+1)
         {
@@ -27,7 +34,7 @@ void MotorHandler::set(QStringList frame)
 
             for(int i=1; i<=motorsCount_; ++i)
             {
-                values.push_back(static_cast<int>(frame.at(i).toFloat(&conv_ok)));
+                values.push_back(rescale(static_cast<int>(frame.at(i).toFloat(&conv_ok))));
                 if(!conv_ok)
                 {
                     emit error("(MotorHandler::set) Invalid int conversion");
@@ -45,7 +52,7 @@ void MotorHandler::set(QStringList frame)
     else if(frame.length() == 2)
     {
         ok = true;
-        cmd = new ModbusCommandWrite(context, getRegister(frame.at(0).toInt()), frame.at(1).toInt());
+        cmd = new ModbusCommandWrite(context, getRegister(frame.at(0).toInt()), rescale(frame.at(1).toInt()));
     }
     else
         emit error("Arguments count not valid. Required 2 or "+QString::number(motorsCount_+1)+\
@@ -136,5 +143,16 @@ QString MotorHandler::description()
     }
 
     return QString(handlerType())+"/"+QString::number(motorsCount_)+"/"+addresses;
+}
+
+int MotorHandler::rescale(int value)
+{
+    if(value == 0)
+        return 0;
+    int ret = 100*(abs(value)-neutral)/(100-neutral);
+    if(value > 0)
+        return ret;
+    //else
+        return -ret;
 }
 
