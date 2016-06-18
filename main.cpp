@@ -12,6 +12,8 @@
 #include "modbus_regs.h"
 #include "measurehandler.h"
 #include "fileinterface.h"
+#include "imuinterface.h"
+
 //#include "logger.h"
 
 //todo:
@@ -103,7 +105,14 @@ int main(int argc, char *argv[])
     //QObject::connect(sh, SIGNAL(info(QString)), lh, SLOT(log(QString)));
 
     MeasureHandler* Mh = new MeasureHandler(1000);
-    Mh->addMeasure('T', new Measure(new FileInterface("/sys/class/thermal/thermal_zone1/temp"), 0.001, 0.0));
+
+    ImuInterface* imu_roll = new ImuInterface(0x28, 0x1c, 360, 2048);
+    ImuInterface* imu_pitch = new ImuInterface(0x28, 0x1e, 360, 2048);
+    imu_roll->prepare();
+
+    Mh->addMeasure('T', new Measure(new FileInterface("/sys/class/thermal/thermal_zone0/temp"), 0.001, 0.0));
+    Mh->addMeasure('A', new Measure(imu_roll, 1.0, 0.0));
+    Mh->addMeasure('A', new Measure(imu_pitch, 1.0, 0.0));
 
     fp3.addHandler(ah);
     fp4.addHandler(th);

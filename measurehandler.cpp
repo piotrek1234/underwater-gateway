@@ -3,6 +3,8 @@
 MeasureHandler::MeasureHandler(int interval)
 {
     timer.setInterval(interval);
+    connect(&timer, SIGNAL(timeout()), this, SLOT(updateMeasures()));
+    timer.start();
 }
 
 void MeasureHandler::get(QStringList frame)
@@ -29,7 +31,7 @@ void MeasureHandler::get(QStringList frame)
             return;
         }
         //-----------------
-        vec.value().at(index)->update();
+        //vec.value().at(index)->update();
         //-----------------
         double value = vec.value().at(index)->get();
         emit response(QStringList() << QString(handlerType()) << QString(type) << QString::number(index) << QString::number(value));
@@ -41,7 +43,19 @@ void MeasureHandler::get(QStringList frame)
 
 void MeasureHandler::set(QStringList frame)
 {
-
+    if(frame.length() == 2)
+    {
+        if(frame.at(0) == "dt")
+        {
+            timer.setInterval(frame.at(1).toInt());
+            emit response(QStringList() << QString(handlerType()) << "dt" << QString::number(timer.interval()));
+            return;
+        }
+    }
+    else
+    {
+        emit error("Measure::set - zla liczba argumentow");
+    }
 }
 
 QString MeasureHandler::description()
