@@ -12,6 +12,7 @@
 #include "fileinterface.h"
 #include "imuinterface.h"
 #include "onewireinterface.h"
+#include "adcinterface.h"
 #include "i2c.h"
 
 //#include "logger.h"
@@ -102,14 +103,12 @@ int main(int argc, char *argv[])
     ImuInterface* imu_pitch = new ImuInterface(i2c1, 0x1e, 360, 2048);
     imu_roll->prepare();
 
-    //AdcInterface* adc_press = new AdcInterface(i2c2, 0);    //rejestr?
-    //adc_press->prepare();
-
     Mh->addMeasure('T', new Measure(new FileInterface("/sys/class/thermal/thermal_zone0/temp"), 0.001, 0.0));
     Mh->addMeasure('A', new Measure(imu_roll, 1.0, 0.0));
     Mh->addMeasure('A', new Measure(imu_pitch, 1.0, 0.0));
-    //Mh->addMeasure('P', new Measure(adc_press, 1.0, 0.0));
+    Mh->addMeasure('P', new Measure(new AdcInterface("1-0068", 0), 1.0, 0.0));  //przeskalować z vin na bar
     Mh->addMeasure('T', new Measure(new OneWireInterface("nr seryjny"), 0.001, 0.0));
+    Mh->addMeasure('T', new Measure(new AdcInterface("1-0068", 1), 1.0, 0.0));  //jw., dla temperatury
 
     fp1.addHandler(ch1);
     fp2.addHandler(ch2);
