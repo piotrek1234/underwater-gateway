@@ -33,4 +33,3 @@ Makefile*
 *.qmlproject.user
 *.qmlproject.user.*
 /udp-stream/Client.cpp
-/underwater-gateway
